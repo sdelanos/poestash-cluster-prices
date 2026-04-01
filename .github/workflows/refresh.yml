@@ -1,7 +1,6 @@
 name: Refresh Cluster Prices
 on:
   schedule:
-    # Full pass at 06:00 UTC, quick pass at 18:00 UTC
     - cron: '0 6 * * *'
     - cron: '0 18 * * *'
   workflow_dispatch:
@@ -14,6 +13,10 @@ on:
         options:
           - full
           - quick
+
+concurrency:
+  group: cluster-refresh
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -35,12 +38,9 @@ jobs:
       - name: Refresh cluster prices
         run: |
           if [ "${{ github.event.schedule }}" = "0 18 * * *" ]; then
-            echo "Running QUICK pass (listings only)"
             npm run refresh:quick
           elif [ "${{ inputs.mode }}" = "quick" ]; then
-            echo "Running QUICK pass (manual trigger)"
             npm run refresh:quick
           else
-            echo "Running FULL pass"
             npm run refresh
           fi
