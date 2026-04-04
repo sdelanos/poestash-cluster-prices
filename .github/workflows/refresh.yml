@@ -1,18 +1,10 @@
 name: Refresh Cluster Prices
 on:
   schedule:
-    - cron: '0 6 * * *'
-    - cron: '0 18 * * *'
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: 'Run mode'
-        required: false
-        default: 'full'
-        type: choice
-        options:
-          - full
-          - quick
+    # Every 6h — each run processes ~2,100 combos before timeout.
+    # 4 runs/day covers all ~5,365 combos with room to spare.
+    - cron: '0 */6 * * *'
+  workflow_dispatch: {}
 
 concurrency:
   group: cluster-refresh
@@ -21,7 +13,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    timeout-minutes: 330
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       POE_CLIENT_ID: ${{ secrets.POE_CLIENT_ID }}
@@ -36,11 +28,4 @@ jobs:
       - run: npm ci
 
       - name: Refresh cluster prices
-        run: |
-          if [ "${{ github.event.schedule }}" = "0 18 * * *" ]; then
-            npm run refresh:quick
-          elif [ "${{ inputs.mode }}" = "quick" ]; then
-            npm run refresh:quick
-          else
-            npm run refresh
-          fi
+        run: npm run refresh

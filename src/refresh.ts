@@ -2,11 +2,13 @@
  * Fetches cluster jewel combo prices from the PoE trade API and stores them in Supabase.
  *
  * Usage:
- *   npx tsx src/refresh.ts [league] [--quick]
+ *   npx tsx src/refresh.ts [league]
  *
  * Options:
  *   league    League name (default: Mirage)
- *   --quick   Only refresh combos that had listings on last check (12h staleness)
+ *
+ * Designed to be run multiple times per day via cron. Each run processes
+ * combos oldest-first and stops when all are within the 24h staleness window.
  *
  * Requires DATABASE_URL and POE_CLIENT_ID environment variables.
  */
@@ -56,7 +58,7 @@ async function searchCombo(
   jewelSize: string,
   tradeStatIds: string[],
   currencyToChaos: Map<string, number>,
-): Promise<{ listingCount: number; minPriceChaos: number | null; rateLimited?: number }> {
+): Promise<{ listingCount: number; minPriceChaos: number | null; rateLimited?: number; rateLimitedEndpoint?: string }> {
   const headers: Record<string, string> = {
     "User-Agent": userAgent,
     "Content-Type": "application/json",
@@ -84,7 +86,7 @@ async function searchCombo(
 
   if (searchRes.status === 429) {
     const retryAfter = parseInt(searchRes.headers.get("Retry-After") ?? "60", 10);
-    return { listingCount: 0, minPriceChaos: null, rateLimited: retryAfter };
+    return { listingCount: 0, minPriceChaos: null, rateLimited: retryAfter, rateLimitedEndpoint: "search" };
   }
   if (!searchRes.ok) {
     throw new Error(`Search ${searchRes.status}: ${await searchRes.text()}`);
@@ -105,7 +107,7 @@ async function searchCombo(
 
   if (fetchRes.status === 429) {
     const retryAfter = parseInt(fetchRes.headers.get("Retry-After") ?? "60", 10);
-    return { listingCount: searchData.total, minPriceChaos: null, rateLimited: retryAfter };
+    return { listingCount: searchData.total, minPriceChaos: null, rateLimited: retryAfter, rateLimitedEndpoint: "fetch" };
   }
   if (!fetchRes.ok) {
     throw new Error(`Fetch ${fetchRes.status}: ${await fetchRes.text()}`);
@@ -133,13 +135,16 @@ async function searchCombo(
 
 let stopping = false;
 process.on("SIGINT", () => {
-  console.log("\nGraceful shutdown...");
+  console.log("\nGraceful shutdown (SIGINT)...");
+  stopping = true;
+});
+process.on("SIGTERM", () => {
+  console.log("\nGraceful shutdown (SIGTERM)...");
   stopping = true;
 });
 
 async function main() {
   const args = process.argv.slice(2);
-  const quickMode = args.includes("--quick");
   const league = args.find((a) => !a.startsWith("--")) ?? "Mirage";
 
   if (!process.env.DATABASE_URL) {
@@ -175,30 +180,25 @@ async function main() {
   console.log(`Currency rates loaded (${currencyToChaos.size} currencies, divine=${currencyToChaos.get("divine")?.toFixed(1)}c)`);
 
   // Count targets
-  const baseFilter = quickMode
-    ? sql`league = ${league} AND listing_count > 0`
-    : sql`league = ${league}`;
-
   const [{ count: targetCount }] = await sql`
-    SELECT count(*) FROM cluster_jewel_prices WHERE ${baseFilter}
+    SELECT count(*) FROM cluster_jewel_prices WHERE league = ${league}
   `;
 
-  const maxAge = quickMode ? 12 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-  const mode = quickMode ? "QUICK (listings only)" : "FULL (all combos)";
+  const maxAge = 24 * 60 * 60 * 1000;
   const estHours = (Number(targetCount) * PAUSE_MS / 1000 / 3600).toFixed(1);
-  console.log(`Mode: ${mode}`);
   console.log(`Target: ${targetCount} combos, ~${estHours} hours at ${PAUSE_MS / 1000}s/combo`);
   console.log(`Ctrl+C to stop gracefully\n`);
 
   let processed = 0;
   let withListings = 0;
+  let rateLimitHits = 0;
   const startTime = Date.now();
 
   while (!stopping) {
     const [combo] = await sql`
       SELECT league, enchantment_tag, jewel_size, combo_key, trade_stat_ids, listing_count, last_refreshed_at
       FROM cluster_jewel_prices
-      WHERE ${baseFilter}
+      WHERE league = ${league}
       ORDER BY last_refreshed_at ASC NULLS FIRST
       LIMIT 1
     `;
@@ -209,8 +209,7 @@ async function main() {
     }
 
     if (combo.last_refreshed_at && Date.now() - new Date(combo.last_refreshed_at).getTime() < maxAge) {
-      const label = quickMode ? "12h" : "24h";
-      console.log(`All target combos refreshed within ${label}. Done.`);
+      console.log("All combos refreshed within 24h. Done.");
       break;
     }
 
@@ -223,7 +222,11 @@ async function main() {
       );
 
       if (result.rateLimited) {
-        console.log(`  RATE LIMITED — waiting ${result.rateLimited}s...`);
+        rateLimitHits++;
+        console.log(
+          `  RATE LIMITED on ${result.rateLimitedEndpoint} — waiting ${result.rateLimited}s ` +
+          `(hit #${rateLimitHits}, after ${processed} combos)`,
+        );
         await new Promise((resolve) => setTimeout(resolve, result.rateLimited! * 1000));
         continue;
       }
@@ -254,9 +257,12 @@ async function main() {
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`  ERROR: ${combo.combo_key}: ${msg}`);
+      // Update last_refreshed_at to avoid infinite retry on persistent errors
+      // (e.g. bad combo data), but keep listing_count and min_price_chaos
+      // untouched so transient API errors don't wipe good data.
       await sql`
         UPDATE cluster_jewel_prices
-        SET listing_count = 0, last_refreshed_at = NOW()
+        SET last_refreshed_at = NOW()
         WHERE league = ${league}
           AND enchantment_tag = ${combo.enchantment_tag}
           AND combo_key = ${combo.combo_key}
@@ -270,7 +276,7 @@ async function main() {
   }
 
   const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
-  console.log(`\nDone! Processed ${processed} combos in ${elapsed} min (${withListings} with listings)`);
+  console.log(`\nDone! Processed ${processed} combos in ${elapsed} min (${withListings} with listings, ${rateLimitHits} rate limit hits)`);
 
   await sql.end();
 }

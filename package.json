@@ -4,8 +4,7 @@
   "private": true,
   "description": "Fetches cluster jewel combo prices from the PoE trade API and stores them in Supabase.",
   "scripts": {
-    "refresh": "tsx src/refresh.ts",
-    "refresh:quick": "tsx src/refresh.ts --quick"
+    "refresh": "tsx src/refresh.ts"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
