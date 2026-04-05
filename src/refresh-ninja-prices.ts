@@ -108,15 +108,29 @@ async function main() {
     process.exit(1);
   }
 
+  // Deduplicate by composite PK (game, league, detailsId, source).
+  // poe.ninja can return the same detailsId from multiple categories.
+  // PostgreSQL rejects duplicate PK rows within a single INSERT ... ON CONFLICT.
+  const seen = new Map<string, number>();
+  const deduped: typeof rows = [];
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const key = `${rows[i].detailsId}:${rows[i].source}`;
+    if (!seen.has(key)) {
+      seen.set(key, i);
+      deduped.push(rows[i]);
+    }
+  }
+  deduped.reverse();
+
   const fetchMs = Date.now() - start;
-  console.log(`Fetched ${rows.length} items (divine=${divineRate.toFixed(1)}c) in ${fetchMs}ms`);
+  console.log(`Fetched ${rows.length} items, ${deduped.length} unique (divine=${divineRate.toFixed(1)}c) in ${fetchMs}ms`);
 
   // 2. Batch upsert into ninja_prices
   const now = new Date();
-  const totalBatches = Math.ceil(rows.length / BATCH_SIZE);
+  const totalBatches = Math.ceil(deduped.length / BATCH_SIZE);
 
-  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
-    const batch = rows.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < deduped.length; i += BATCH_SIZE) {
+    const batch = deduped.slice(i, i + BATCH_SIZE);
     const dbRows = batch.map((row) => toDbRow(row, now));
 
     await sql`
@@ -157,7 +171,7 @@ async function main() {
   // 3. Upsert price metadata
   await sql`
     INSERT INTO ninja_price_meta (game, league, divine_rate, item_count, last_refreshed_at)
-    VALUES (${game}, ${league}, ${divineRate}, ${rows.length}, ${now})
+    VALUES (${game}, ${league}, ${divineRate}, ${deduped.length}, ${now})
     ON CONFLICT (game, league) DO UPDATE SET
       divine_rate = EXCLUDED.divine_rate,
       item_count = EXCLUDED.item_count,
@@ -173,7 +187,7 @@ async function main() {
 
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
   console.log(
-    `Done in ${elapsed}s — ${rows.length} upserted, ${deleted.count} stale deleted, divine=${divineRate.toFixed(1)}c`,
+    `Done in ${elapsed}s — ${deduped.length} upserted, ${deleted.count} stale deleted, divine=${divineRate.toFixed(1)}c`,
   );
 
   await sql.end();
