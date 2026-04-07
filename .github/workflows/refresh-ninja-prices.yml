@@ -26,5 +26,14 @@ jobs:
 
       - run: npm ci
 
-      - name: Refresh ninja prices
-        run: npm run refresh:ninja
+      - name: Refresh ninja prices (Mirage)
+        run: npx tsx src/refresh-ninja-prices.ts "Mirage"
+
+      - name: Refresh ninja prices (Hardcore Mirage)
+        run: npx tsx src/refresh-ninja-prices.ts "Hardcore Mirage"
+
+      - name: Refresh ninja prices (Standard)
+        run: npx tsx src/refresh-ninja-prices.ts "Standard"
+
+      - name: Refresh ninja prices (Hardcore)
+        run: npx tsx src/refresh-ninja-prices.ts "Hardcore"
