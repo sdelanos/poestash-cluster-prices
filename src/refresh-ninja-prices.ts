@@ -50,7 +50,7 @@ function toDbRow(row: NinjaFetchedItem, now: Date) {
     item_name: row.itemName,
     chaos_value: row.chaosValue,
     divine_value: row.divineValue,
-    listing_count: row.listingCount,
+    listing_count: row.listingCount ?? 0,
     source: row.source,
     ninja_category: row.ninjaCategory,
     icon: row.icon,
