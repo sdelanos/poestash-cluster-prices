@@ -5,7 +5,11 @@ import type {
   NinjaFetchedItem,
 } from "./ninja-types";
 import type { NinjaType } from "./ninja-types";
-import { ALL_NINJA_TYPES, STASH_CURRENCY_FORMAT } from "./ninja-types";
+import {
+  ALL_NINJA_TYPES,
+  STASH_CURRENCY_FORMAT,
+  EXCHANGE_CANONICAL_TYPES,
+} from "./ninja-types";
 
 const NINJA_BASE = "https://poe.ninja/poe1/api/economy";
 const POECDN_BASE = "https://web.poecdn.com";
@@ -183,7 +187,16 @@ export async function fetchAllNinjaPrices(
     }
   }
 
-  // Step 2: Fetch all types from both stash and exchange in parallel
+  // Step 2: Fetch all types in parallel.
+  //
+  // Stash feed: always fetch (the app uses stash data even for
+  // exchange-canonical types — to display poe.ninja-hidden items as
+  // dimmed/struck-through "Not counted" rows in the personal stash view).
+  //
+  // Exchange feed: only fetch for the 16 types where poe.ninja's UI
+  // actually consumes it (EXCHANGE_CANONICAL_TYPES). The other 24 types
+  // return empty exchange responses — fetching them was 24 wasted requests
+  // per refresh.
   const fetches: Promise<NinjaFetchedItem[]>[] = [];
 
   for (const type of ALL_NINJA_TYPES) {
@@ -198,10 +211,12 @@ export async function fetchAllNinjaPrices(
       );
     }
 
-    // Exchange: try every type (empty responses are free)
-    fetches.push(
-      fetchExchange(game, league, type, divineRate).catch(() => []),
-    );
+    // Exchange: only worth firing for canonical-exchange types
+    if (EXCHANGE_CANONICAL_TYPES.has(type)) {
+      fetches.push(
+        fetchExchange(game, league, type, divineRate).catch(() => []),
+      );
+    }
   }
 
   const results = await Promise.all(fetches);

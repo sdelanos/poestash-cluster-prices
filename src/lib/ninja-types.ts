@@ -60,6 +60,34 @@ export type NinjaType = (typeof ALL_NINJA_TYPES)[number];
  *  All other types use the item-format stash endpoint. */
 export const STASH_CURRENCY_FORMAT = new Set<NinjaType>(["Currency", "Fragment"]);
 
+/**
+ * Types where poe.ninja's public UI consumes the Currency Exchange feed.
+ * Verified 2026-05-03 by capturing the network requests poe.ninja makes
+ * for each category page. For these types, exchange data is canonical
+ * (and the only data the public site shows). Stash data still gets ingested
+ * so the app can flag stash-only items as low-confidence (the dim-and-don't
+ * -count UI in the personal/guild stash view); see
+ * `lib/poe-ninja/types.ts:EXCHANGE_CANONICAL_TYPES` in the main repo.
+ */
+export const EXCHANGE_CANONICAL_TYPES = new Set<NinjaType>([
+  "Currency",
+  "Fragment",
+  "DivinationCard",
+  "Scarab",
+  "Essence",
+  "Fossil",
+  "Oil",
+  "DeliriumOrb",
+  "Omen",
+  "Resonator",
+  "Tattoo",
+  "AllflameEmber",
+  "Artifact",
+  "DjinnCoin",
+  "Runegraft",
+  "Astrolabe",
+]);
+
 // ---------------------------------------------------------------------------
 // Stash endpoint response types
 // ---------------------------------------------------------------------------
