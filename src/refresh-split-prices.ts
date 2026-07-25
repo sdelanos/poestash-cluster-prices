@@ -18,6 +18,10 @@
  * Usage:
  *   npx tsx src/refresh-split-prices.ts [league]
  *
+ * With no league argument the worker resolves the current challenge league at
+ * run time (see lib/trade-league.ts), so it follows league rollovers with no
+ * workflow edit. Pass an explicit league name for an ad-hoc run.
+ *
  * Designed to run every 6h via cron, processing oldest-first until the run
  * times out. Requires DATABASE_URL and POE_CLIENT_ID.
  */
@@ -33,6 +37,7 @@ import {
   type SplitQualityBandDef,
 } from "./lib/split-quality-bands";
 import { ladderFloorChaos, type ListingPrice } from "./lib/split-ladder";
+import { resolveTradeLeague } from "./lib/trade-league";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -199,7 +204,7 @@ interface MarketState {
 
 async function main() {
   const args = process.argv.slice(2);
-  const league = args.find((a) => !a.startsWith("--")) ?? "Mirage";
+  const explicit = args.find((a) => !a.startsWith("--"));
   // Optional cap on markets processed this run (operational safety + testing).
   const limitArg = args.find((a) => a.startsWith("--limit="));
   const limit = limitArg ? parseInt(limitArg.split("=")[1], 10) : Infinity;
@@ -210,6 +215,12 @@ async function main() {
   }
 
   const sql = postgres(process.env.DATABASE_URL, { idle_timeout: 30, max_lifetime: 300, connect_timeout: 10 });
+
+  const league = await resolveTradeLeague(sql, explicit);
+  if (!league) {
+    await sql.end();
+    return;
+  }
 
   // Currency conversion + split-cost estimate from ninja_prices. Pull only the
   // currencies (for chaos conversion) and the three split ingredients, not the

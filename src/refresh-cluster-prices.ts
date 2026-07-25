@@ -2,10 +2,13 @@
  * Fetches cluster jewel combo prices from the PoE trade API and stores them in Supabase.
  *
  * Usage:
- *   npx tsx src/refresh.ts [league]
+ *   npx tsx src/refresh-cluster-prices.ts [league]
  *
  * Options:
- *   league    League name (default: Mirage)
+ *   league    League name. With no argument the worker resolves the current
+ *             challenge league at run time (see lib/trade-league.ts), so it
+ *             follows league rollovers with no workflow edit. A league with no
+ *             combo rows yet is seeded from the existing catalog.
  *
  * Designed to be run multiple times per day via cron. Each run processes
  * combos oldest-first and stops when all are within the 24h staleness window.
@@ -15,6 +18,7 @@
 
 import "dotenv/config";
 import postgres from "postgres";
+import { resolveTradeLeague } from "./lib/trade-league";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -130,6 +134,59 @@ async function searchCombo(
 }
 
 // ---------------------------------------------------------------------------
+// Combo seeding
+// ---------------------------------------------------------------------------
+
+/**
+ * Make sure the league has a row per combo to refresh.
+ *
+ * The combo catalog — which notable pairings exist and the trade stat ids that
+ * find them — is league-independent data that lives only in this table. The
+ * refresh loop below only ever UPDATEs, so a league with no rows reads as
+ * "nothing due" and is silently never priced. That is exactly what happened at
+ * the Allflame rollover.
+ *
+ * Copies the catalog from the most recently refreshed other league, leaving
+ * prices NULL so every combo is immediately due. Idempotent: once the league
+ * is seeded this is a no-op.
+ */
+async function seedLeagueCombos(
+  sql: postgres.Sql,
+  league: string,
+): Promise<void> {
+  const [{ count }] = await sql<{ count: string }[]>`
+    SELECT count(*) FROM cluster_jewel_prices WHERE league = ${league}
+  `;
+  if (Number(count) > 0) return;
+
+  const [source] = await sql<{ league: string }[]>`
+    SELECT league FROM cluster_jewel_prices
+    WHERE league <> ${league}
+    GROUP BY league
+    ORDER BY max(last_refreshed_at) DESC NULLS LAST
+    LIMIT 1
+  `;
+  if (!source) {
+    console.warn(
+      `WARN: no combo catalog to seed ${league} from — cluster_jewel_prices is empty.`,
+    );
+    return;
+  }
+
+  const seeded = await sql`
+    INSERT INTO cluster_jewel_prices
+      (league, enchantment_tag, jewel_size, combo_key, notable_names, trade_stat_ids)
+    SELECT ${league}, enchantment_tag, jewel_size, combo_key, notable_names, trade_stat_ids
+    FROM cluster_jewel_prices
+    WHERE league = ${source.league}
+    ON CONFLICT (league, enchantment_tag, combo_key) DO NOTHING
+  `;
+  console.log(
+    `Seeded ${seeded.count} combos for ${league} from ${source.league}`,
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -145,7 +202,7 @@ process.on("SIGTERM", () => {
 
 async function main() {
   const args = process.argv.slice(2);
-  const league = args.find((a) => !a.startsWith("--")) ?? "Mirage";
+  const explicit = args.find((a) => !a.startsWith("--"));
 
   if (!process.env.DATABASE_URL) {
     console.error("DATABASE_URL is not set");
@@ -157,6 +214,14 @@ async function main() {
     max_lifetime: 300,
     connect_timeout: 10,
   });
+
+  const league = await resolveTradeLeague(sql, explicit);
+  if (!league) {
+    await sql.end();
+    return;
+  }
+
+  await seedLeagueCombos(sql, league);
 
   // Build currency conversion map
   const currencyRows = await sql`
