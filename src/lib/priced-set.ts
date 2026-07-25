@@ -55,6 +55,19 @@ const isExcluded = (name: string): boolean =>
 const hasEnded = (endAt: string | null | undefined, now: number): boolean =>
   endAt != null && Date.parse(endAt) <= now;
 
+const startsLater = (
+  startAt: string | null | undefined,
+  now: number,
+): boolean => startAt != null && Date.parse(startAt) > now;
+
+/** A live challenge league: not permanent, not an SSF/Ruthless variant, not
+ *  ended. Shared by both selectors so they agree on what a challenge league is;
+ *  each then narrows further (Hardcore variants, start dates). */
+const isLiveChallenge = (l: LeagueLike, now: number): boolean =>
+  !PERMANENT_PRICED.includes(l.name as (typeof PERMANENT_PRICED)[number]) &&
+  !isExcluded(l.name) &&
+  !hasEnded(l.endAt, now);
+
 export function selectPricedSet(
   leagues: LeagueLike[],
   opts: PricedSetOptions = {},
@@ -78,12 +91,7 @@ export function selectPricedSet(
   //    league, isn't an SSF/Ruthless variant, and hasn't ended. Each softcore
   //    league pulls in its Hardcore variant; the "Hardcore ..." entries are
   //    added that way, so skip them on their own pass.
-  const challenges = all.filter(
-    (l) =>
-      !PERMANENT_PRICED.includes(l.name as (typeof PERMANENT_PRICED)[number]) &&
-      !isExcluded(l.name) &&
-      !hasEnded(l.endAt, now),
-  );
+  const challenges = all.filter((l) => isLiveChallenge(l, now));
 
   for (const l of challenges) {
     if (l.name.startsWith("Hardcore ")) continue;
@@ -118,10 +126,10 @@ export function selectCurrentChallengeLeague(
 
   const challenges = leagues.filter(
     (l) =>
-      !PERMANENT_PRICED.includes(l.name as (typeof PERMANENT_PRICED)[number]) &&
-      !isExcluded(l.name) &&
+      isLiveChallenge(l, now) &&
       !l.name.startsWith("Hardcore ") &&
-      !hasEnded(l.endAt, now) &&
+      // GGG publishes the next league before it goes live. Pricing it early
+      // means querying trade for a league that has no listings yet.
       !startsLater(l.startAt, now),
   );
 
@@ -138,8 +146,3 @@ export function selectCurrentChallengeLeague(
 
   return pick?.name ?? null;
 }
-
-const startsLater = (
-  startAt: string | null | undefined,
-  now: number,
-): boolean => startAt != null && Date.parse(startAt) > now;

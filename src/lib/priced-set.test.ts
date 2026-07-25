@@ -215,4 +215,24 @@ describe("selectCurrentChallengeLeague", () => {
   it("empty input -> null", () => {
     expect(selectCurrentChallengeLeague([], { now: AFTER_LAUNCH })).toBeNull();
   });
+
+  it("the just-started league beats an older one regardless of list order", () => {
+    // Regression guard for the rollover bug. `resolveTradeLeague` must pick
+    // from GGG's full list and only then ask whether poe.ninja priced the
+    // winner. Pre-filtering to "leagues poe.ninja has data for" leaves the
+    // ended league as the only candidate (ninja_price_meta retains it for
+    // days), and it wins — which is how the rollover kept pricing Mirage.
+    const preFilteredToStaleOnly = dated([["Mirage", "2026-04-04T20:00:00Z"]]);
+    expect(
+      selectCurrentChallengeLeague(preFilteredToStaleOnly, { now: AFTER_LAUNCH }),
+    ).toBe("Mirage");
+
+    const fullList = dated([
+      ["Mirage", "2026-04-04T20:00:00Z"],
+      ["Allflame", "2026-07-24T20:00:00Z"],
+    ]);
+    expect(selectCurrentChallengeLeague(fullList, { now: AFTER_LAUNCH })).toBe(
+      "Allflame",
+    );
+  });
 });
