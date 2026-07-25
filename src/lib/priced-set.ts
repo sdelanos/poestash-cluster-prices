@@ -27,6 +27,11 @@ export interface LeagueLike {
   /** ISO date. Optional. A value in the past means the league has ended;
    *  null or absent means open-ended (or the source doesn't expose it). */
   endAt?: string | null;
+  /** ISO date the league goes live. Optional; only sources that expose start
+   *  dates (GGG's `/leagues`) set it. Used to order co-listed challenge
+   *  leagues during a rollover, so it is only read by
+   *  `selectCurrentChallengeLeague`. */
+  startAt?: string | null;
 }
 
 export interface PricedSetOptions {
@@ -89,3 +94,52 @@ export function selectPricedSet(
 
   return out;
 }
+
+/**
+ * Pick the single softcore challenge league to price, or null when none is
+ * live.
+ *
+ * `selectPricedSet` is for workers that can afford to price every live league
+ * from a bulk feed. The trade-API workers (cluster jewels, split bases) cannot:
+ * they spend one rate-limited search per row and need hours to clear a single
+ * league, so they must commit to exactly one. This is that choice, and it
+ * deliberately mirrors the app's `detectDefaultLeague` so the league a worker
+ * writes is the league the selector defaults to.
+ *
+ * Returns null rather than falling back to Standard. Between leagues there is
+ * no challenge economy, and quietly pricing Standard would burn the whole rate
+ * limit budget writing rows no page asks for.
+ */
+export function selectCurrentChallengeLeague(
+  leagues: LeagueLike[],
+  opts: PricedSetOptions = {},
+): string | null {
+  const now = opts.now ?? Date.now();
+
+  const challenges = leagues.filter(
+    (l) =>
+      !PERMANENT_PRICED.includes(l.name as (typeof PERMANENT_PRICED)[number]) &&
+      !isExcluded(l.name) &&
+      !l.name.startsWith("Hardcore ") &&
+      !hasEnded(l.endAt, now) &&
+      !startsLater(l.startAt, now),
+  );
+
+  // Newest start date wins: during a rollover GGG lists the ending and the
+  // starting league together, and the new one is what players are in. Sources
+  // that expose no dates leave us with the first listed challenge league.
+  const withStart = challenges.filter(
+    (l): l is LeagueLike & { startAt: string } => Boolean(l.startAt),
+  );
+  const pick =
+    withStart.length > 0
+      ? withStart.reduce((a, b) => (b.startAt > a.startAt ? b : a))
+      : challenges[0];
+
+  return pick?.name ?? null;
+}
+
+const startsLater = (
+  startAt: string | null | undefined,
+  now: number,
+): boolean => startAt != null && Date.parse(startAt) > now;

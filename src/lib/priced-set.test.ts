@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { selectPricedSet, type LeagueLike } from "./priced-set";
+import {
+  selectPricedSet,
+  selectCurrentChallengeLeague,
+  type LeagueLike,
+} from "./priced-set";
 
 const named = (names: string[]): LeagueLike[] => names.map((name) => ({ name }));
 
@@ -129,5 +133,86 @@ describe("selectPricedSet", () => {
   it("deduplicates repeated names", () => {
     const leagues = named(["Standard", "Standard", "Hardcore"]);
     expect(selectPricedSet(leagues, { now: NOW })).toEqual(["Standard", "Hardcore"]);
+  });
+});
+
+describe("selectCurrentChallengeLeague", () => {
+  /** After Allflame went live, so the fixtures below read as "now". */
+  const AFTER_LAUNCH = Date.parse("2026-07-25T00:00:00Z");
+
+  /** Softcore challenge names as GGG lists them, with start dates. */
+  const dated = (entries: [string, string | null][]): LeagueLike[] =>
+    entries.map(([name, startAt]) => ({ name, startAt }));
+
+  it("picks the only live challenge league", () => {
+    const leagues = dated([
+      ["Standard", "2013-01-23T21:00:00Z"],
+      ["Hardcore", "2013-01-23T21:00:00Z"],
+      ["Allflame", "2026-07-24T20:00:00Z"],
+      ["Hardcore Allflame", "2026-07-24T20:00:00Z"],
+    ]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBe("Allflame");
+  });
+
+  it("rollover dual-list: takes the newest challenge league by start date", () => {
+    // GGG lists the ending and starting league together for hours-to-days.
+    // Order is deliberately oldest-last to prove we sort, not take index 0.
+    const leagues = dated([
+      ["Standard", "2013-01-23T21:00:00Z"],
+      ["Allflame", "2026-07-24T20:00:00Z"],
+      ["Mirage", "2026-04-04T20:00:00Z"],
+    ]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBe("Allflame");
+  });
+
+  it("never returns a Hardcore, SSF or Ruthless variant", () => {
+    const leagues = dated([
+      ["Standard", "2013-01-23T21:00:00Z"],
+      ["Hardcore Allflame", "2026-07-24T20:00:00Z"],
+      ["HC SSF Allflame", "2026-07-24T20:00:00Z"],
+      ["Ruthless Allflame", "2026-07-24T20:00:00Z"],
+      ["SSF R Allflame", "2026-07-24T20:00:00Z"],
+      ["SSF Allflame", "2026-07-24T20:00:00Z"],
+      ["Allflame", "2026-07-24T20:00:00Z"],
+    ]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBe("Allflame");
+  });
+
+  it("between leagues: no challenge league live -> null, never a permanent league", () => {
+    // Returning "Standard" here would silently price the wrong economy for
+    // months, so the caller must be told there is nothing to price instead.
+    const leagues = dated([
+      ["Standard", "2013-01-23T21:00:00Z"],
+      ["Hardcore", "2013-01-23T21:00:00Z"],
+      ["Solo Self-Found", "2013-01-23T21:00:00Z"],
+    ]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBeNull();
+  });
+
+  it("skips a challenge league that has already ended", () => {
+    const leagues = dated([["Standard", "2013-01-23T21:00:00Z"]]).concat([
+      { name: "Mirage", startAt: "2026-04-04T20:00:00Z", endAt: PAST },
+    ]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBeNull();
+  });
+
+  it("ignores a challenge league whose start date is still in the future", () => {
+    // GGG publishes the next league before it goes live; pricing it early
+    // means querying trade for a league with no listings.
+    const leagues = dated([
+      ["Standard", "2013-01-23T21:00:00Z"],
+      ["Mirage", "2026-04-04T20:00:00Z"],
+      ["Allflame", FUTURE],
+    ]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBe("Mirage");
+  });
+
+  it("falls back to the first challenge league when no start dates are exposed", () => {
+    const leagues = named(["Standard", "Mirage", "Hardcore Mirage"]);
+    expect(selectCurrentChallengeLeague(leagues, { now: AFTER_LAUNCH })).toBe("Mirage");
+  });
+
+  it("empty input -> null", () => {
+    expect(selectCurrentChallengeLeague([], { now: AFTER_LAUNCH })).toBeNull();
   });
 });

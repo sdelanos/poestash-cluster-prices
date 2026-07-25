@@ -27,5 +27,8 @@ jobs:
 
       - run: npm ci
 
+      # No league argument: the worker resolves the current challenge league at
+      # run time and seeds its combo rows on first sight, so a rollover needs no
+      # workflow edit. Pass a name only for an ad-hoc backfill.
       - name: Refresh cluster prices
         run: npm run refresh:clusters

@@ -28,5 +28,8 @@ jobs:
 
       - run: npm ci
 
+      # No league argument: the worker resolves the current challenge league at
+      # run time, so a rollover needs no workflow edit. Rows self-seed through
+      # the upsert. Pass a name only for an ad-hoc backfill.
       - name: Refresh split prices
         run: npm run refresh:splits

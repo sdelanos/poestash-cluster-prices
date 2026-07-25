@@ -37,6 +37,14 @@ Each worker asks its own upstream which leagues exist right now, rather than
 reading a central list. A worker only ever prices leagues its own source can
 actually serve. See ADR 0001.
 
+**Current challenge league**:
+The single league the trade-API workers (cluster jewels, split bases) price: the
+newest live challenge league, softcore only. Distinct from the priced set —
+these two spend one rate-limited trade request per row and need hours to clear
+one league, so they commit to one instead of refreshing all. Resolved from GGG's
+league list, gated on poe.ninja having priced it (chaos conversion). See ADR
+0002.
+
 **Three-tier failure contract**:
 How a worker decides between exiting quietly and failing loud. Discovery call
 fails (upstream down) → fail loud. Discovery returns no challenge league
