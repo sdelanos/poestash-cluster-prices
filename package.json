@@ -10,6 +10,7 @@
     "refresh:gem-usage": "tsx src/refresh-gem-usage.ts",
     "refresh:temple": "tsx src/refresh-temple-prices.ts",
     "refresh:splits": "tsx src/refresh-split-prices.ts",
+    "refresh:roast-rares": "tsx src/refresh-roast-rare-prices.ts",
     "refresh:leagues": "tsx src/refresh-leagues.ts",
     "test": "vitest run"
   },

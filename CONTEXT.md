@@ -38,12 +38,19 @@ reading a central list. A worker only ever prices leagues its own source can
 actually serve. See ADR 0001.
 
 **Current challenge league**:
-The single league the trade-API workers (cluster jewels, split bases) price: the
-newest live challenge league, softcore only. Distinct from the priced set —
-these two spend one rate-limited trade request per row and need hours to clear
-one league, so they commit to one instead of refreshing all. Resolved from GGG's
-league list, gated on poe.ninja having priced it (chaos conversion). See ADR
-0002.
+The single league the trade-API workers (cluster jewels, split bases, Roast
+rares) price: the newest live challenge league, softcore only. Distinct from the
+priced set — these spend one rate-limited trade request per row, so they commit
+to one league instead of refreshing all. Resolved from GGG's league list, gated
+on poe.ninja having priced it (chaos conversion). See ADR 0002.
+
+**Player-seeded keyspace**:
+A universe this repo does not enumerate. The cluster and split workers own their
+catalogues (a combo list, a base list) and seed rows themselves; the Roast rare
+worker prices only rows the *app* wrote when a player pasted a build guide, and
+never invents one. Demand is the enumeration, so the keyspace tracks what people
+actually play — and a row retires on a `last_seen_at` sweep once nobody pastes
+that guide any more.
 
 **Three-tier failure contract**:
 How a worker decides between exiting quietly and failing loud. Discovery call
