@@ -12,12 +12,12 @@
  *
  * Designed to run daily via GitHub Actions cron. One poe.watch currency call
  * per league; the ~100 "Scrying Orb (<map area>)" variants become one row per
- * (league, map area) in scrying_orb_prices.
+ * (league, map_name) in scrying_orb_prices.
  *
  * Orbs are not Currency Exchange items, so poe.ninja never carries them —
  * poe.watch is the sole source. Rows are never deleted by this worker: a
  * poe.watch outage leaves prior rows intact and exits non-zero for visibility,
- * and staleness is surfaced app-side from updated_at.
+ * and staleness is surfaced app-side from last_refreshed_at.
  *
  * Requires DATABASE_URL environment variable (not needed for --dry-run).
  */
@@ -43,18 +43,18 @@ const POE_WATCH_BASE = "https://api.poe.watch";
 // ---------------------------------------------------------------------------
 
 const COLUMNS = [
-  "league", "map_area", "mean_chaos", "daily_sold", "low_confidence",
-  "updated_at",
+  "league", "map_name", "mean_chaos", "daily_sold", "low_confidence",
+  "last_refreshed_at",
 ] as const;
 
 function toDbRow(row: ScryingOrbRow, league: string, now: Date) {
   return {
     league,
-    map_area: row.mapArea,
+    map_name: row.mapArea,
     mean_chaos: row.mean,
     daily_sold: row.daily,
     low_confidence: row.lowConfidence,
-    updated_at: now,
+    last_refreshed_at: now,
   };
 }
 
@@ -104,11 +104,11 @@ async function refreshOneLeague(
 
   await sql`
     INSERT INTO scrying_orb_prices ${sql(dbRows, ...COLUMNS)}
-    ON CONFLICT (league, map_area) DO UPDATE SET
+    ON CONFLICT (league, map_name) DO UPDATE SET
       mean_chaos = EXCLUDED.mean_chaos,
       daily_sold = EXCLUDED.daily_sold,
       low_confidence = EXCLUDED.low_confidence,
-      updated_at = EXCLUDED.updated_at
+      last_refreshed_at = EXCLUDED.last_refreshed_at
   `;
 
   return rows.length;
