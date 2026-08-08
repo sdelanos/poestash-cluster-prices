@@ -12,6 +12,7 @@
     "refresh:splits": "tsx src/refresh-split-prices.ts",
     "refresh:roast-rares": "tsx src/refresh-roast-rare-prices.ts",
     "refresh:leagues": "tsx src/refresh-leagues.ts",
+    "refresh:scrying-orbs": "tsx src/refresh-scrying-orb-prices.ts",
     "test": "vitest run"
   },
   "dependencies": {
