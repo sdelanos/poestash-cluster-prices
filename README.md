@@ -9,3 +9,4 @@ Background workers for [PoeStash](https://www.poestash.com). Runs via GitHub Act
 - **Gem usage** (`refresh-gem-usage.yml`): refreshes per-gem player counts every 6 hours.
 - **Temple prices** (`refresh-temple-prices.yml`): refreshes Temple of Atzoatl room prices hourly.
 - **Roast rare prices** (`refresh-roast-rare-prices.yml`): prices the rare slots of build guides players pasted into a Roast, every 3 hours.
+- **Scrying Orb prices** (`refresh-scrying-orb-prices.yml`): refreshes per-map Scrying Orb prices from poe.watch daily.
