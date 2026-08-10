@@ -46,6 +46,10 @@ interface PoeLeague {
   startAt: string;
   endAt: string | null;
   description: string;
+  /** GGG marks short-window races (ExileCon qualifiers, boss-kill races,
+   *  Gauntlets) with `event: true`. Absent on challenge and permanent
+   *  leagues. */
+  event?: boolean;
   rules: { id: string; name: string; description: string }[];
 }
 
@@ -74,24 +78,36 @@ async function getServiceToken(
   return json.access_token;
 }
 
+/** Whether an event league's window contains `now`. A past race is dead and a
+ *  future one has no stash to read yet, so neither belongs in the selector. */
+function isLiveEvent(league: PoeLeague, now: number): boolean {
+  if (!league.startAt) return false;
+  const started = Date.parse(league.startAt) <= now;
+  const ended = league.endAt ? Date.parse(league.endAt) <= now : false;
+  return started && !ended;
+}
+
 /** Standalone events (Return-of-the-Ancestors-style) live under type=event,
  *  not type=main. Merge them in, but only while live, so the selector shows
  *  the event's league forks without pulling in past or upcoming races. Main
  *  wins on id collision. Duplicated in the app (lib/poe/api.ts) because the
- *  two repos can't import each other. */
+ *  two repos can't import each other.
+ *
+ *  The window filter runs over BOTH halves, because type=main is not
+ *  event-free: on 2026-08-10 the poe2 type=main list carried three
+ *  not-yet-started ExileCon qualifiers (the same races type=event lists),
+ *  each flagged `event: true`. Filtering only the type=event half let them
+ *  into this cache, and the app's `detectDefaultLeague` then read the newest
+ *  one — a race starting Aug 27 — as the current PoE 2 challenge league. */
 function mergeActiveEvents(
   main: PoeLeague[],
   events: PoeLeague[],
 ): PoeLeague[] {
   const now = Date.now();
-  const seen = new Set(main.map((l) => l.id));
-  const active = events.filter((l) => {
-    if (seen.has(l.id) || !l.startAt) return false;
-    const started = Date.parse(l.startAt) <= now;
-    const ended = l.endAt ? Date.parse(l.endAt) <= now : false;
-    return started && !ended;
-  });
-  return [...main, ...active];
+  const live = main.filter((l) => !l.event || isLiveEvent(l, now));
+  const seen = new Set(live.map((l) => l.id));
+  const active = events.filter((l) => !seen.has(l.id) && isLiveEvent(l, now));
+  return [...live, ...active];
 }
 
 async function fetchLeaguesOfType(
@@ -152,8 +168,15 @@ async function main() {
       try {
         const leagues = await fetchLeagues(token, pair.realmParam);
         // Keep startAt so the app can follow the newest challenge league
-        // during a rollover, when GGG briefly lists both old and new.
-        const minimal = leagues.map((l) => ({ id: l.id, startAt: l.startAt }));
+        // during a rollover, when GGG briefly lists both old and new. Keep
+        // `event` too: a live race survives the merge above and always looks
+        // newest by start date, so the app needs the flag to exclude it from
+        // that pick. Omitted when false to keep the stored rows small.
+        const minimal = leagues.map((l) => ({
+          id: l.id,
+          startAt: l.startAt,
+          ...(l.event ? { event: true } : {}),
+        }));
         await sql`
           INSERT INTO poe_leagues_cache (game, realm, leagues, refreshed_at)
           VALUES (${pair.game}, ${pair.realm}, ${sql.json(minimal)}::jsonb, NOW())
