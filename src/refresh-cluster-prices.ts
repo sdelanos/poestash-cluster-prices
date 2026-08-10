@@ -19,6 +19,7 @@
 import "dotenv/config";
 import postgres from "postgres";
 import { resolveTradeLeague } from "./lib/trade-league";
+import { buildComboSearchQuery, type JewelSize } from "./lib/cluster-query";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -27,11 +28,6 @@ import { resolveTradeLeague } from "./lib/trade-league";
 const TRADE_BASE = "https://www.pathofexile.com/api/trade";
 // Rate limits: 5/10s, 15/60s, 30/300s. 30/300s is the binding constraint.
 const PAUSE_MS = 10_000;
-
-const SIZE_TO_TYPE: Record<string, string> = {
-  medium: "Medium Cluster Jewel",
-  large: "Large Cluster Jewel",
-};
 
 const CURRENCY_SLUGS: Record<string, string> = {
   chaos: "chaos orb",
@@ -59,7 +55,7 @@ const userAgent = `OAuth ${process.env.POE_CLIENT_ID ?? "poestashapp"}/1.0.0 (co
 
 async function searchCombo(
   league: string,
-  jewelSize: string,
+  jewelSize: JewelSize,
   tradeStatIds: string[],
   currencyToChaos: Map<string, number>,
 ): Promise<{ listingCount: number; minPriceChaos: number | null; rateLimited?: number; rateLimitedEndpoint?: string }> {
@@ -68,18 +64,7 @@ async function searchCombo(
     "Content-Type": "application/json",
   };
 
-  const query = {
-    query: {
-      status: { option: "securable" },
-      type: SIZE_TO_TYPE[jewelSize],
-      stats: [{ type: "and", filters: tradeStatIds.map((id: string) => ({ id })) }],
-      filters: {
-        type_filters: { filters: { rarity: { option: "nonunique" } } },
-        misc_filters: { filters: { corrupted: { option: "false" } } },
-      },
-    },
-    sort: { price: "asc" },
-  };
+  const query = buildComboSearchQuery(jewelSize, tradeStatIds);
 
   const searchRes = await fetch(`${TRADE_BASE}/search/${encodeURIComponent(league)}`, {
     method: "POST",
