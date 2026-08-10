@@ -1,0 +1,59 @@
+import { describe, expect, it } from "vitest";
+import { buildComboSearchQuery } from "./cluster-query";
+
+describe("buildComboSearchQuery", () => {
+  // Pinned whole rather than field by field. The app builds the same *shape* in
+  // clusterCraftTradeUrl, in a different repo where no test can reach it, so
+  // this is what makes a change to the shape here a deliberate one rather than
+  // a silent drift away from the search the player clicks.
+  it("searches uncorrupted non-unique jewels with the notables, cheapest first", () => {
+    expect(buildComboSearchQuery("medium", ["enchant.stat_111", "enchant.stat_222"])).toEqual({
+      query: {
+        status: { option: "securable" },
+        type: "Medium Cluster Jewel",
+        stats: [
+          {
+            type: "and",
+            filters: [
+              { id: "enchant.stat_111" },
+              { id: "enchant.stat_222" },
+              { id: "enchant.stat_3086156145", value: { min: 4, max: 5 } },
+            ],
+          },
+        ],
+        filters: {
+          type_filters: { filters: { rarity: { option: "nonunique" } } },
+          misc_filters: { filters: { corrupted: { option: "false" } } },
+        },
+      },
+      sort: { price: "asc" },
+    });
+  });
+
+  // The bug this module exists for: without the passive-count filter the
+  // cheapest listing is an off-size jewel carrying the same notables, and the
+  // app subtracts a 4-5 (or 8) passive base cost from that jewel's price.
+  it.each([
+    ["medium" as const, { min: 4, max: 5 }],
+    ["large" as const, { min: 8, max: 8 }],
+  ])("filters %s combos on the passive count the craft targets", (jewelSize, passives) => {
+    const q = buildComboSearchQuery(jewelSize, ["enchant.stat_111"]) as any;
+    expect(q.query.stats[0].filters).toContainEqual({
+      id: "enchant.stat_3086156145",
+      value: passives,
+    });
+  });
+
+  // Better a combo the loop logs and skips than one priced against every
+  // passive count, which is the bug wearing a disguise.
+  it("refuses a jewel size it has no passive window for", () => {
+    expect(() => buildComboSearchQuery("small" as any, ["enchant.stat_111"])).toThrow(
+      /Unknown jewel size/,
+    );
+  });
+
+  it("uses the large jewel type for large combos", () => {
+    const q = buildComboSearchQuery("large", ["enchant.stat_111"]) as any;
+    expect(q.query.type).toBe("Large Cluster Jewel");
+  });
+});
