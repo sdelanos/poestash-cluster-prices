@@ -20,14 +20,20 @@ import "dotenv/config";
 import postgres from "postgres";
 import { resolveTradeLeague } from "./lib/trade-league";
 import { buildComboSearchQuery, type JewelSize } from "./lib/cluster-query";
+import { sustainableIntervalMs, describeLimits } from "./lib/rate-limit";
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
 
 const TRADE_BASE = "https://www.pathofexile.com/api/trade";
-// Rate limits: 5/10s, 15/60s, 30/300s. 30/300s is the binding constraint.
-const PAUSE_MS = 10_000;
+
+/**
+ * Opening pace, per *request*, until the first response tells us the real one.
+ * Deliberately the old per-combo figure: erring slow costs a few seconds, and
+ * erring fast costs an hour (#7).
+ */
+const DEFAULT_INTERVAL_MS = 10_000;
 
 const CURRENCY_SLUGS: Record<string, string> = {
   chaos: "chaos orb",
@@ -53,6 +59,34 @@ const CURRENCY_SLUGS: Record<string, string> = {
 
 const userAgent = `OAuth ${process.env.POE_CLIENT_ID ?? "poestashapp"}/1.0.0 (contact: contact@poestash.com)`;
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * The budget is per request and a combo costs two of them — a search, then a
+ * fetch for the cheapest listing's price. Pacing per combo is what ran this
+ * worker at double the allowed rate (#7), so every request waits its own turn.
+ */
+let intervalMs = DEFAULT_INTERVAL_MS;
+let limitsLogged = false;
+
+async function pacedFetch(url: string, init?: RequestInit): Promise<Response> {
+  const res = await fetch(url, init);
+
+  const advertised = sustainableIntervalMs(res.headers);
+  if (advertised != null) intervalMs = advertised;
+
+  if (!limitsLogged) {
+    console.log(`${describeLimits(res.headers)} — pacing ${(intervalMs / 1000).toFixed(1)}s/request`);
+    limitsLogged = true;
+  }
+
+  // A 429 carries its own Retry-After, which the caller sleeps instead. Adding
+  // the cooldown on top would just delay the retry further.
+  if (res.status !== 429) await sleep(intervalMs);
+
+  return res;
+}
+
 async function searchCombo(
   league: string,
   jewelSize: JewelSize,
@@ -66,7 +100,7 @@ async function searchCombo(
 
   const query = buildComboSearchQuery(jewelSize, tradeStatIds);
 
-  const searchRes = await fetch(`${TRADE_BASE}/search/${encodeURIComponent(league)}`, {
+  const searchRes = await pacedFetch(`${TRADE_BASE}/search/${encodeURIComponent(league)}`, {
     method: "POST",
     headers,
     body: JSON.stringify(query),
@@ -89,7 +123,7 @@ async function searchCombo(
 
   // Fetch the cheapest listing. With securable (instant buyout) status,
   // price fixing is impossible — the cheapest listing is the real market price.
-  const fetchRes = await fetch(
+  const fetchRes = await pacedFetch(
     `${TRADE_BASE}/fetch/${searchData.result[0]}?query=${searchData.id}`,
     { headers, signal: AbortSignal.timeout(15_000) },
   );
@@ -234,8 +268,10 @@ async function main() {
     SELECT count(*) FROM cluster_jewel_prices WHERE league = ${league}
   `;
 
-  const estHours = (Number(targetCount) * PAUSE_MS / 1000 / 3600).toFixed(1);
-  console.log(`Target: ${targetCount} combos, ~${estHours} hours at ${PAUSE_MS / 1000}s/combo`);
+  // No ETA: the pace comes from the rate-limit headers and retunes as they
+  // change, and a combo with no listings costs one request where a priced one
+  // costs two. The old banner quoted 7.8h for runs that never finished a pass.
+  console.log(`Target: ${targetCount} combos, up to 2 requests each`);
   console.log(`Ctrl+C to stop gracefully\n`);
 
   let processed = 0;
@@ -318,10 +354,7 @@ async function main() {
       `;
       processed++;
     }
-
-    if (!stopping) {
-      await new Promise((resolve) => setTimeout(resolve, PAUSE_MS));
-    }
+    // No pause here: pacedFetch already waited out each request's own turn.
   }
 
   const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
