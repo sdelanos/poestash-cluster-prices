@@ -171,10 +171,14 @@ async function main() {
         // during a rollover, when GGG briefly lists both old and new. Keep
         // `event` too: a live race survives the merge above and always looks
         // newest by start date, so the app needs the flag to exclude it from
-        // that pick. Omitted when false to keep the stored rows small.
+        // that pick. `endAt` is the other half of that window — this row is
+        // rewritten hourly, so a race that ends between two runs is live in
+        // the stored copy, and only its end date says otherwise. Both omitted
+        // when absent to keep the stored rows small.
         const minimal = leagues.map((l) => ({
           id: l.id,
           startAt: l.startAt,
+          ...(l.endAt ? { endAt: l.endAt } : {}),
           ...(l.event ? { event: true } : {}),
         }));
         await sql`
