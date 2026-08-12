@@ -14,8 +14,10 @@
  *      "allgems" facet entry.
  *
  *   3. GET /poe1/api/builds/dictionary/{gem_hash}
- *      Protobuf. Ordered list of 800+ gem display names. The gem index in
- *      the manifest's allgems entries refers to a position in this list.
+ *      Ordered list of 800+ gem display names. The gem index in the
+ *      manifest's allgems entries refers to a position in this list. Served
+ *      as an "NDIC" container since 2026-08-03 (see ./ndic-dictionary), and
+ *      as bare protobuf before that; we accept either.
  *
  * The "filter" URL param is server-ignored - actual filtering happens
  * client-side in WASM. We do not need to filter; we get every gem's count
@@ -34,10 +36,16 @@
  *       field 1, str = facet name
  *       field 2, str = sha1 hash to fetch under /dictionary/{hash}
  *
- *   gem dictionary:
+ *   gem dictionary (legacy protobuf form):
  *     field 1, str = type label ("gem")
  *     field 2, repeated str = gem display names (indexed)
  */
+
+import {
+  decodeNdicDictionary,
+  hasNdicMagic,
+  leadingBytes,
+} from "./ndic-dictionary";
 
 const POE_NINJA_BASE = "https://poe.ninja";
 
@@ -140,6 +148,53 @@ function parseProto(
 
 function decodeUtf8(b: Uint8Array): string {
   return new TextDecoder("utf-8").decode(b);
+}
+
+/**
+ * Decode a /dictionary/{hash} response into its ordered name list.
+ *
+ * poe.ninja switched this endpoint from bare protobuf to the "NDIC" container
+ * on 2026-08-03 without changing the advertised content-type, so the shape is
+ * detected from the leading bytes rather than trusted from the headers. A
+ * response matching neither shape is reported with the endpoint and its
+ * leading bytes: a bare "unsupported wire type 6" from the protobuf decoder
+ * cost 35 silent failed runs before anyone could tell what had changed.
+ */
+export function decodeDictionaryNames(
+  buf: Uint8Array,
+  url: string,
+): string[] {
+  if (hasNdicMagic(buf)) {
+    try {
+      return decodeNdicDictionary(buf);
+    } catch (err) {
+      throw new Error(
+        `dictionary ${url}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
+  // Legacy protobuf form: field 2 is the repeated list of display names.
+  let names: string[] = [];
+  let protoError: string | null = null;
+  try {
+    const dict = parseProto(buf, 0, buf.length);
+    for (const ent of dict.get(2) ?? []) {
+      if (!ent.bytes) continue;
+      names.push(decodeUtf8(ent.bytes));
+    }
+  } catch (err) {
+    protoError = err instanceof Error ? err.message : String(err);
+  }
+
+  if (names.length === 0) {
+    throw new Error(
+      `dictionary ${url}: response is neither an "NDIC" container nor a protobuf name list ` +
+        `(${buf.length} bytes, leading bytes ${leadingBytes(buf)})` +
+        (protoError ? `; protobuf decode said: ${protoError}` : ""),
+    );
+  }
+  return names;
 }
 
 // ---------------------------------------------------------------------------
@@ -287,15 +342,9 @@ export async function fetchGemUsage(
   }
 
   // 2. Gem dictionary
-  const dictBuf = await fetchBytes(
-    `${POE_NINJA_BASE}/poe1/api/builds/dictionary/${gemHash}`,
-  );
-  const dict = parseProto(dictBuf, 0, dictBuf.length);
-  const gemNames: string[] = [];
-  for (const ent of dict.get(2) ?? []) {
-    if (!ent.bytes) continue;
-    gemNames.push(decodeUtf8(ent.bytes));
-  }
+  const dictUrl = `${POE_NINJA_BASE}/poe1/api/builds/dictionary/${gemHash}`;
+  const dictBuf = await fetchBytes(dictUrl);
+  const gemNames = decodeDictionaryNames(dictBuf, dictUrl);
 
   // 3. Join
   const counts = new Map<string, number>();
