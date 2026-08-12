@@ -175,16 +175,21 @@ export function decodeDictionaryNames(
   }
 
   // Legacy protobuf form: field 2 is the repeated list of display names.
-  let names: string[] = [];
+  // Only the parse is guarded, so a message that fails partway through can
+  // never contribute a truncated name list: `parseProto` either returns a
+  // whole message or throws, and nothing is collected until it has returned.
+  let dict: Map<number, ProtoField[]> | null = null;
   let protoError: string | null = null;
   try {
-    const dict = parseProto(buf, 0, buf.length);
-    for (const ent of dict.get(2) ?? []) {
-      if (!ent.bytes) continue;
-      names.push(decodeUtf8(ent.bytes));
-    }
+    dict = parseProto(buf, 0, buf.length);
   } catch (err) {
     protoError = err instanceof Error ? err.message : String(err);
+  }
+
+  const names: string[] = [];
+  for (const ent of dict?.get(2) ?? []) {
+    if (!ent.bytes) continue;
+    names.push(decodeUtf8(ent.bytes));
   }
 
   if (names.length === 0) {

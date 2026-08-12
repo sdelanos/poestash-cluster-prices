@@ -1,31 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { decodeDictionaryNames } from "./poeninja-builds";
+import { buildNdic, readRealDictionary } from "./ndic-dictionary.fixture";
 
 const DICT_URL =
   "https://poe.ninja/poe1/api/builds/dictionary/0d6b347d6a6ce194788c74fb450dbc02e6c28697";
 
 const enc = new TextEncoder();
-
-/** Minimal NDIC container. Deliberately narrow — up to 16 entries, each under
- *  128 bytes — so it stays a one-block, one-byte-per-length case. The full
- *  layout, including the two-byte varint branch, is covered in
- *  ndic-dictionary.test.ts. */
-function tinyNdic(names: string[]): Uint8Array {
-  const bodies = names.map((n) => enc.encode(n));
-  const header = new Uint8Array(36);
-  header.set(enc.encode("NDIC"), 0);
-  const dv = new DataView(header.buffer);
-  dv.setUint32(4 + 0 * 4, 2, true); // format version
-  dv.setUint32(4 + 2 * 4, names.length, true); // count
-  dv.setUint32(4 + 6 * 4, 1, true); // one skip block
-  dv.setUint32(4 + 7 * 4, names.length, true); // length table bytes
-  return Uint8Array.from([
-    ...header,
-    ...new Array(8).fill(0), // the single skip-index entry
-    ...bodies.map((b) => b.length),
-    ...bodies.flatMap((b) => Array.from(b)),
-  ]);
-}
 
 /** The pre-2026-08-03 shape: field 1 type label, field 2 repeated names. */
 function protobufDictionary(names: string[]): Uint8Array {
@@ -40,7 +20,13 @@ function protobufDictionary(names: string[]): Uint8Array {
 describe("decodeDictionaryNames", () => {
   it("decodes the NDIC container", () => {
     const names = ["Absolution", "Blade Vortex", "Zealotry"];
-    expect(decodeDictionaryNames(tinyNdic(names), DICT_URL)).toEqual(names);
+    expect(decodeDictionaryNames(buildNdic(names), DICT_URL)).toEqual(names);
+  });
+
+  it("decodes a real NDIC response end to end", () => {
+    const names = decodeDictionaryNames(readRealDictionary("class"), DICT_URL);
+    expect(names).toHaveLength(28);
+    expect(names[0]).toBe("Ascendant");
   });
 
   it("still decodes the legacy bare protobuf shape", () => {
@@ -72,15 +58,28 @@ describe("decodeDictionaryNames", () => {
   it("rejects a protobuf message that carries no names", () => {
     // Parses cleanly, but field 2 is absent: the endpoint moved on.
     expect(() =>
-      decodeDictionaryNames(Uint8Array.from([0x0a, 3, ...enc.encode("gem")]), DICT_URL),
+      decodeDictionaryNames(
+        Uint8Array.from([0x0a, 3, ...enc.encode("gem")]),
+        DICT_URL,
+      ),
+    ).toThrow(/neither an "NDIC" container nor a protobuf name list/);
+  });
+
+  it("rejects a truncated protobuf outright, rather than returning the names it did read", () => {
+    // Cutting mid-name leaves a length-delimited field running past the end.
+    // Returning the prefix would sail past MIN_PLAUSIBLE_GEM_COUNT on a real
+    // dictionary and then prune every gem missing from the partial list.
+    const full = protobufDictionary(["Absolution", "Blade Vortex", "Zealotry"]);
+    expect(() =>
+      decodeDictionaryNames(full.subarray(0, full.length - 4), DICT_URL),
     ).toThrow(/neither an "NDIC" container nor a protobuf name list/);
   });
 
   it("names the endpoint when an NDIC container fails to decode", () => {
-    const buf = tinyNdic(["Absolution", "Zealotry"]);
+    const buf = buildNdic(["Absolution", "Zealotry"]);
     // Truncate into the string data so the lengths overrun the buffer.
-    expect(() => decodeDictionaryNames(buf.subarray(0, buf.length - 4), DICT_URL)).toThrow(
-      new RegExp(`dictionary ${DICT_URL}: .*string data`),
-    );
+    expect(() =>
+      decodeDictionaryNames(buf.subarray(0, buf.length - 4), DICT_URL),
+    ).toThrow(new RegExp(`dictionary ${DICT_URL}: .*string data`));
   });
 });

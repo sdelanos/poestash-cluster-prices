@@ -161,8 +161,8 @@ function readVarint(
 }
 
 /** First bytes of a buffer as hex plus their printable ASCII, for errors. */
-export function leadingBytes(buf: Uint8Array, take = 8): string {
-  const head = Array.from(buf.subarray(0, take));
+export function leadingBytes(buf: Uint8Array): string {
+  const head = Array.from(buf.subarray(0, 8));
   const hex = head.map((b) => b.toString(16).padStart(2, "0")).join(" ");
   const ascii = head
     .map((b) => (b >= 0x20 && b <= 0x7e ? String.fromCharCode(b) : "."))
