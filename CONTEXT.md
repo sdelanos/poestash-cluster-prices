@@ -57,3 +57,30 @@ How a worker decides between exiting quietly and failing loud. Discovery call
 fails (upstream down) → fail loud. Discovery returns no challenge league
 (between-leagues) → skip quietly. A single discovered league has no data yet
 (404 / "doesn't exist" / empty) → skip that league, keep going, still exit 0.
+
+### Prices
+
+**Two-sided quote**:
+The `pay` / `receive` pair poe.ninja publishes on its stash currency feed, and
+only there — Currency and Fragment, nothing else. The receive side is what an
+instant buyer pays; the pay side is what an instant seller gets. Either can be
+absent, and often is: 36 of 68 lines were receive-only in the 2026-08-15
+Allflame capture. The gap between the two sides is the app's **Spread**
+(ADR 0042 in the app repo).
+
+**Inverted units**:
+The trap in that feed, and the reason `stash-currency-rows.ts` exists.
+`receive.value` is chaos per unit; `pay.value` is **units per chaos** — the
+same quote upside down. Divine Orb reads 0.0055 against a 185-chaos orb.
+Left alone the pay side is wrong by a factor of the price squared and looks
+like a plausible small number, so the inversion is killed at the ingestion
+boundary, in a pure function, pinned by tests against a captured payload.
+Nothing downstream of this worker ever sees a per-chaos rate.
+
+**Ingestion reports, the strategy judges**:
+The spread columns are written verbatim. The live feed carries 90%-plus
+spreads on vendor-tier currency, crossed quotes on thin pairs (Ancient Orb:
+pay 6.0c above receive 5.0c), and occasional garbage rows — all real, all
+stored. The volume floor and the exchange-feed referee that throw those out
+live in the app, where the hourly volume they need actually exists. A worker
+that quietly dropped them would hide the data the guards are calibrated on.

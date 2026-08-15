@@ -10,6 +10,7 @@ import {
   STASH_CURRENCY_FORMAT,
   EXCHANGE_CANONICAL_TYPES,
 } from "./ninja-types";
+import { mapStashCurrencyRows } from "./stash-currency-rows";
 
 const NINJA_BASE = "https://poe.ninja/poe1/api/economy";
 const POECDN_BASE = "https://web.poecdn.com";
@@ -45,29 +46,7 @@ async function fetchStashCurrency(
   const data: NinjaCurrencyResponse = await res.json();
   if (!data.lines?.length) return [];
 
-  const detailMap = new Map<string, { icon: string; tradeId: string }>();
-  for (const detail of data.currencyDetails) {
-    detailMap.set(detail.name, { icon: detail.icon, tradeId: detail.tradeId });
-  }
-
-  return data.lines.map((line) => {
-    const chaos = line.chaosEquivalent;
-    const detail = detailMap.get(line.currencyTypeName);
-    return {
-      game,
-      league,
-      itemName: line.currencyTypeName.toLowerCase(),
-      chaosValue: chaos,
-      divineValue: divineRate > 0 ? chaos / divineRate : 0,
-      listingCount: line.receive?.listing_count ?? 0,
-      source: "stash" as const,
-      ninjaCategory: type,
-      icon: detail?.icon ?? null,
-      detailsId: line.detailsId,
-      sparklineData: line.receiveSparkLine?.data ?? null,
-      totalChange: line.receiveSparkLine?.totalChange ?? null,
-    };
-  });
+  return mapStashCurrencyRows(data, { game, league, type, divineRate });
 }
 
 // ---------------------------------------------------------------------------

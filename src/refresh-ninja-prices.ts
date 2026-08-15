@@ -56,6 +56,7 @@ const COLUMNS = [
   "corrupted", "gem_level", "gem_quality", "level_required",
   "exalted_value", "count", "volume", "mutated_modifiers",
   "flavour_text", "implicit_modifiers", "property_modifiers", "requirement_modifiers",
+  "pay_value", "receive_value", "pay_listing_count", "receive_listing_count",
   "updated_at",
 ] as const;
 
@@ -105,6 +106,13 @@ function toDbRow(row: NinjaFetchedItem, now: Date) {
     implicit_modifiers: row.implicitModifiers ?? null,
     property_modifiers: row.propertyModifiers ?? null,
     requirement_modifiers: row.requirementModifiers ?? null,
+    // Two-sided quote, chaos per unit, already de-inverted at the ingestion
+    // boundary. Only the stash Currency/Fragment feed produces these; every
+    // other row writes four nulls.
+    pay_value: row.payValue ?? null,
+    receive_value: row.receiveValue ?? null,
+    pay_listing_count: row.payListingCount ?? null,
+    receive_listing_count: row.receiveListingCount ?? null,
     updated_at: now,
   };
 }
@@ -206,6 +214,10 @@ async function refreshOneLeague(
         implicit_modifiers = EXCLUDED.implicit_modifiers,
         property_modifiers = EXCLUDED.property_modifiers,
         requirement_modifiers = EXCLUDED.requirement_modifiers,
+        pay_value = EXCLUDED.pay_value,
+        receive_value = EXCLUDED.receive_value,
+        pay_listing_count = EXCLUDED.pay_listing_count,
+        receive_listing_count = EXCLUDED.receive_listing_count,
         updated_at = EXCLUDED.updated_at
     `;
 

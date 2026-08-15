@@ -217,6 +217,15 @@ export interface NinjaFetchedItem {
   count?: number | null;
   volume?: number | null;
   mutatedModifiers?: { text: string; optional: boolean; statId?: string }[] | null;
+  /** The two sides of the stash currency feed's quote, both in chaos per unit
+   *  and both already de-inverted (see `stash-currency-rows.ts`). Only the
+   *  stash Currency/Fragment feed is two-sided, so these are absent on every
+   *  item-feed and exchange-feed row, and either side may be absent on a
+   *  currency row quoted in one direction only. */
+  payValue?: number | null;
+  receiveValue?: number | null;
+  payListingCount?: number | null;
+  receiveListingCount?: number | null;
   // Tooltip source fields (uniques only). flavourText is normalized to lines.
   implicitModifiers?: { text: string; optional?: boolean }[] | null;
   flavourText?: string[] | null;
