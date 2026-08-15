@@ -96,8 +96,12 @@ export const EXCHANGE_CANONICAL_TYPES = new Set<NinjaType>([
 export interface NinjaCurrencyLine {
   currencyTypeName: string;
   chaosEquivalent: number;
-  pay: { value: number; listing_count: number } | null;
-  receive: { value: number; listing_count: number } | null;
+  /** A side the feed has no quote for is **omitted**, not sent as null — 2 of
+   *  the 7 lines in the committed capture have no `pay` key at all. Optional
+   *  rather than required-and-nullable so the captured fixture typechecks as
+   *  what it is. */
+  pay?: { value: number; listing_count: number } | null;
+  receive?: { value: number; listing_count: number } | null;
   paySparkLine: { totalChange: number; data: (number | null)[] };
   receiveSparkLine: { totalChange: number; data: (number | null)[] };
   lowConfidencePaySparkLine: { totalChange: number; data: (number | null)[] };
@@ -109,7 +113,9 @@ export interface NinjaCurrencyDetail {
   id: number;
   icon: string;
   name: string;
-  tradeId: string;
+  /** Absent on some currencies — Scrying Orb carries no tradeId in the
+   *  committed capture. Nothing here reads it; only `icon` is used. */
+  tradeId?: string;
 }
 
 export interface NinjaCurrencyResponse {

@@ -7,9 +7,9 @@ import fixture from "./__fixtures__/stash-currency-allflame.json";
 // /economy/stash/current/currency/overview?league=Allflame&type=Currency,
 // trimmed to seven lines: five both-sided (one of them crossed), two
 // receive-only. Values are verbatim — nothing here is tidied up.
-const PAYLOAD = fixture as unknown as NinjaCurrencyResponse;
+const PAYLOAD: NinjaCurrencyResponse = fixture;
 
-const CTX = { game: "poe1", league: "Allflame", type: "Currency", divineRate: 185.4 };
+const CTX = { game: "poe1", league: "Allflame", type: "Currency" as const, divineRate: 185.4 };
 
 const map = (payload: NinjaCurrencyResponse = PAYLOAD) =>
   mapStashCurrencyRows(payload, CTX);
@@ -43,8 +43,10 @@ describe("mapStashCurrencyRows", () => {
   });
 
   it("puts both sides in chaos per unit, pay below receive", () => {
-    // Every both-sided row in the capture: a seller who crosses the spread
-    // gets the pay side and a buyer pays the receive side, so pay < receive.
+    // The four uncrossed both-sided rows in the capture: a seller who crosses
+    // the spread gets the pay side and a buyer pays the receive side, so
+    // pay < receive. Ancient Orb is the fifth and is deliberately absent —
+    // it was captured crossed, and has its own test below.
     for (const name of ["mirror of kalandra", "divine orb", "chromatic orb", "exalted orb"]) {
       const row = byName(name);
       expect(row.payValue).toBeGreaterThan(0);
@@ -74,7 +76,8 @@ describe("mapStashCurrencyRows", () => {
   });
 
   it("a one-sided row carries only the side it has", () => {
-    // Orb of Annulment was captured receive-only — nobody is bidding.
+    // Orb of Annulment was captured receive-only: the feed omits the `pay`
+    // key entirely rather than sending it as null.
     const annul = byName("orb of annulment");
     expect(annul.payValue).toBeNull();
     expect(annul.payListingCount).toBeNull();
@@ -92,11 +95,27 @@ describe("mapStashCurrencyRows", () => {
     expect(row.chaosValue).toBe(185.4);
   });
 
-  it("treats a non-positive pay quote as no pay side rather than dividing by it", () => {
-    // A zero would invert to Infinity and poison every downstream spread.
-    const zero = map(oneLine({ pay: { value: 0, listing_count: 3 } }))[0];
-    expect(zero.payValue).toBeNull();
-    expect(zero.payListingCount).toBeNull();
+  it("treats a non-positive quote as no side, on either side", () => {
+    // A zero pay quote would invert to Infinity; a zero receive quote would
+    // read as free. Neither is a price, and the count goes with the price.
+    const zeroPay = map(oneLine({ pay: { value: 0, listing_count: 3 } }))[0];
+    expect(zeroPay.payValue).toBeNull();
+    expect(zeroPay.payListingCount).toBeNull();
+
+    const zeroReceive = map(oneLine({ receive: { value: 0, listing_count: 3 } }))[0];
+    expect(zeroReceive.receiveValue).toBeNull();
+    expect(zeroReceive.receiveListingCount).toBeNull();
+  });
+
+  it("does not treat the receive side as a copy of chaosValue", () => {
+    // chaosEquivalent is the feed's own smoothed figure and matches the
+    // receive side on most rows but not all. Divine Orb was captured 185.4
+    // against a 193.4 receive side. A downstream spread computed from
+    // chaosValue instead of receiveValue would be wrong by that 4%.
+    const divine = byName("divine orb");
+    expect(divine.chaosValue).toBe(185.4);
+    expect(divine.receiveValue).toBe(193.4);
+    expect(divine.receiveValue).not.toBe(divine.chaosValue);
   });
 
   it("records a crossed quote rather than sanitizing it", () => {

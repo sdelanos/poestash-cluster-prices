@@ -11,11 +11,17 @@
  * The two sides are quoted in mutually inverted units:
  *
  *   receive.value  chaos per unit of the currency — what an instant *buyer*
- *                  pays. Already the unit we want; the feed's own
- *                  `chaosEquivalent` is this number.
+ *                  pays. Already the unit we want.
  *   pay.value      units of the currency per chaos — what an instant *seller*
  *                  gets, expressed upside down. Chaos per unit is its
  *                  reciprocal.
+ *
+ * `receiveValue` is *not* a copy of the row's `chaosValue`, and the two must
+ * not be used interchangeably downstream. `chaosValue` is the feed's
+ * `chaosEquivalent`, which is its own smoothed figure: it matches
+ * `receive.value` on most rows but not all — Divine Orb was captured at
+ * `chaosEquivalent` 185.4 against a receive side of 193.4, a 4% gap. The
+ * spread must be computed from the two sides, never from `chaosValue`.
  *
  * Captured 2026-08-15 (Allflame), Divine Orb: pay 0.0055, receive 193.4. Left
  * alone, the pay side would read as 0.0055 chaos against a 185.4-chaos orb —
@@ -34,41 +40,46 @@
  * exists. Ingestion reports; the strategy judges.
  */
 
-import type { NinjaCurrencyResponse, NinjaFetchedItem } from "./ninja-types";
+import type { NinjaCurrencyResponse, NinjaFetchedItem, NinjaType } from "./ninja-types";
 
 export interface StashCurrencyContext {
   game: string;
   league: string;
-  /** poe.ninja type this payload was fetched for — "Currency" or "Fragment". */
-  type: string;
+  /** poe.ninja type this payload was fetched for. Only the two types in
+   *  `STASH_CURRENCY_FORMAT` — Currency and Fragment — use this endpoint. */
+  type: NinjaType;
   /** Chaos per divine, for the divine-denominated mirror of chaosValue. */
   divineRate: number;
 }
 
-/** Chaos per unit from the pay side's inverted quote.
+/** A quote we are willing to call a price, or null.
  *
- *  A missing side, and a quote that is zero, negative or non-finite, both mean
- *  "no pay side": inverting those yields Infinity or a negative price, which
- *  would poison every spread computed from the row. Absent is honest; a
- *  fabricated number is not. */
-function payChaosPerUnit(value: number | undefined): number | null {
+ *  A missing side and a quote that is zero, negative or non-finite are the
+ *  same thing: no side. Nothing here fabricates a number to fill the gap —
+ *  inverting a zero yields Infinity, and a zero-chaos price would read as
+ *  free. Absent is honest; a fabricated number is not. Applied to both sides,
+ *  so neither can carry a value the other would be rejected for. */
+function quoted(value: number | undefined): number | null {
   if (value == null || !Number.isFinite(value) || value <= 0) return null;
-  return 1 / value;
+  return value;
 }
 
 export function mapStashCurrencyRows(
   data: NinjaCurrencyResponse,
   ctx: StashCurrencyContext,
 ): NinjaFetchedItem[] {
-  const detailMap = new Map<string, { icon: string; tradeId: string }>();
-  for (const detail of data.currencyDetails ?? []) {
-    detailMap.set(detail.name, { icon: detail.icon, tradeId: detail.tradeId });
+  const iconByName = new Map<string, string>();
+  for (const detail of data.currencyDetails) {
+    iconByName.set(detail.name, detail.icon);
   }
 
-  return (data.lines ?? []).map((line) => {
+  return data.lines.map((line) => {
     const chaos = line.chaosEquivalent;
-    const detail = detailMap.get(line.currencyTypeName);
-    const payValue = payChaosPerUnit(line.pay?.value);
+    // The pay side is the inverted one, so it is the only side that needs
+    // turning over once it is known to be a real quote.
+    const payQuote = quoted(line.pay?.value);
+    const payValue = payQuote == null ? null : 1 / payQuote;
+    const receiveValue = quoted(line.receive?.value);
 
     return {
       game: ctx.game,
@@ -79,16 +90,16 @@ export function mapStashCurrencyRows(
       listingCount: line.receive?.listing_count ?? 0,
       source: "stash" as const,
       ninjaCategory: ctx.type,
-      icon: detail?.icon ?? null,
+      icon: iconByName.get(line.currencyTypeName) ?? null,
       detailsId: line.detailsId,
       sparklineData: line.receiveSparkLine?.data ?? null,
       totalChange: line.receiveSparkLine?.totalChange ?? null,
       payValue,
-      // The listing count belongs to the side's price, so it goes only where
-      // that price went: a pay quote we refused to invert has no count either.
+      // A listing count belongs to its side's price, so it goes only where
+      // that price went: a quote we refused has no count either.
       payListingCount: payValue == null ? null : (line.pay?.listing_count ?? null),
-      receiveValue: line.receive?.value ?? null,
-      receiveListingCount: line.receive?.listing_count ?? null,
+      receiveValue,
+      receiveListingCount: receiveValue == null ? null : (line.receive?.listing_count ?? null),
     };
   });
 }
