@@ -36,6 +36,11 @@ describe("buildComboSearchQuery", () => {
   it.each([
     ["medium" as const, { min: 4, max: 5 }],
     ["large" as const, { min: 8, max: 8 }],
+    // Nobody crafts a small, so its window is the size's whole legal range
+    // (RePoE min_skills 2, max_skills 3) rather than a craft's sweet spot.
+    // Every small matches it — the filter is here to keep the shape honest,
+    // not to narrow the search.
+    ["small" as const, { min: 2, max: 3 }],
   ])("filters %s combos on the passive count the craft targets", (jewelSize, passives) => {
     const q = buildComboSearchQuery(jewelSize, ["enchant.stat_111"]) as any;
     expect(q.query.stats[0].filters).toContainEqual({
@@ -47,13 +52,16 @@ describe("buildComboSearchQuery", () => {
   // Better a combo the loop logs and skips than one priced against every
   // passive count, which is the bug wearing a disguise.
   it("refuses a jewel size it has no passive window for", () => {
-    expect(() => buildComboSearchQuery("small" as any, ["enchant.stat_111"])).toThrow(
+    expect(() => buildComboSearchQuery("gigantic" as any, ["enchant.stat_111"])).toThrow(
       /Unknown jewel size/,
     );
   });
 
-  it("uses the large jewel type for large combos", () => {
-    const q = buildComboSearchQuery("large", ["enchant.stat_111"]) as any;
-    expect(q.query.type).toBe("Large Cluster Jewel");
+  it.each([
+    ["large" as const, "Large Cluster Jewel"],
+    ["small" as const, "Small Cluster Jewel"],
+  ])("uses the %s jewel type", (jewelSize, type) => {
+    const q = buildComboSearchQuery(jewelSize, ["enchant.stat_111"]) as any;
+    expect(q.query.type).toBe(type);
   });
 });

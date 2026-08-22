@@ -1,0 +1,732 @@
+[
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Battle-Hardened",
+    "tradeStatId": "explicit.stat_4188581520"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Blacksmith",
+    "tradeStatId": "explicit.stat_1127706436"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Dragon Hunter",
+    "tradeStatId": "explicit.stat_1038955006"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Enduring Composure",
+    "tradeStatId": "explicit.stat_2043284086"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Heart of Iron",
+    "tradeStatId": "explicit.stat_1483358825"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Militarism",
+    "tradeStatId": "explicit.stat_4154709486"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Prismatic Carapace",
+    "tradeStatId": "explicit.stat_3492924480"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Second Skin",
+    "tradeStatId": "explicit.stat_2773515950"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Stubborn Student",
+    "tradeStatId": "explicit.stat_2383914651"
+  },
+  {
+    "enchantmentTag": "affliction_armour",
+    "notableName": "Uncompromising",
+    "tradeStatId": "explicit.stat_382360671"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Enduring Ward",
+    "tradeStatId": "explicit.stat_252724319"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Fiery Aegis",
+    "tradeStatId": "explicit.stat_3233538204"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Flexible Sentry",
+    "tradeStatId": "explicit.stat_982290947"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Mage Bane",
+    "tradeStatId": "explicit.stat_684155617"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Mage Hunter",
+    "tradeStatId": "explicit.stat_2118664144"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Mystical Ward",
+    "tradeStatId": "explicit.stat_2314111938"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "One with the Shield",
+    "tradeStatId": "explicit.stat_1976069869"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Powerful Ward",
+    "tradeStatId": "explicit.stat_164032122"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Prodigious Defence",
+    "tradeStatId": "explicit.stat_1705633890"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Riot Queller",
+    "tradeStatId": "explicit.stat_254194892"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Rote Reinforcement",
+    "tradeStatId": "explicit.stat_2478282326"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Second Skin",
+    "tradeStatId": "explicit.stat_2773515950"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Stoic Focus",
+    "tradeStatId": "explicit.stat_1088949570"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Strike Leader",
+    "tradeStatId": "explicit.stat_282062371"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_block",
+    "notableName": "Vicious Guard",
+    "tradeStatId": "explicit.stat_4054656914"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_dodge_attacks",
+    "notableName": "Aerialist",
+    "tradeStatId": "explicit.stat_3848677307"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_dodge_attacks",
+    "notableName": "Darting Movements",
+    "tradeStatId": "explicit.stat_846491278"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_dodge_attacks",
+    "notableName": "Elegant Form",
+    "tradeStatId": "explicit.stat_289714529"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_dodge_attacks",
+    "notableName": "Hit and Run",
+    "tradeStatId": "explicit.stat_2665170385"
+  },
+  {
+    "enchantmentTag": "affliction_chance_to_dodge_attacks",
+    "notableName": "Untouchable",
+    "tradeStatId": "explicit.stat_2758966888"
+  },
+  {
+    "enchantmentTag": "affliction_chaos_resistance",
+    "notableName": "Antivenom",
+    "tradeStatId": "explicit.stat_774369953"
+  },
+  {
+    "enchantmentTag": "affliction_chaos_resistance",
+    "notableName": "Blessed",
+    "tradeStatId": "explicit.stat_775689239"
+  },
+  {
+    "enchantmentTag": "affliction_chaos_resistance",
+    "notableName": "Born of Chaos",
+    "tradeStatId": "explicit.stat_2449392400"
+  },
+  {
+    "enchantmentTag": "affliction_chaos_resistance",
+    "notableName": "Exposure Therapy",
+    "tradeStatId": "explicit.stat_131358113"
+  },
+  {
+    "enchantmentTag": "affliction_chaos_resistance",
+    "notableName": "Rot-Resistant",
+    "tradeStatId": "explicit.stat_713945233"
+  },
+  {
+    "enchantmentTag": "affliction_chaos_resistance",
+    "notableName": "Student of Decay",
+    "tradeStatId": "explicit.stat_3202667190"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Alchemist",
+    "tradeStatId": "explicit.stat_2912949210"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Antifreeze",
+    "tradeStatId": "explicit.stat_2622946553"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Flexible Sentry",
+    "tradeStatId": "explicit.stat_982290947"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Hibernator",
+    "tradeStatId": "explicit.stat_2294919888"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Prismatic Carapace",
+    "tradeStatId": "explicit.stat_3492924480"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Prismatic Dance",
+    "tradeStatId": "explicit.stat_1149662934"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Prismatic Heart",
+    "tradeStatId": "explicit.stat_2342448236"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Pure Guile",
+    "tradeStatId": "explicit.stat_1621496909"
+  },
+  {
+    "enchantmentTag": "affliction_cold_resistance",
+    "notableName": "Winter Prowler",
+    "tradeStatId": "explicit.stat_755881431"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Blizzard Caller",
+    "tradeStatId": "explicit.stat_3758712376"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Doedre's Apathy",
+    "tradeStatId": "explicit.stat_1381945089"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Doedre's Gluttony",
+    "tradeStatId": "explicit.stat_2695848124"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Doedre's Spite",
+    "tradeStatId": "explicit.stat_462115791"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Evil Eye",
+    "tradeStatId": "explicit.stat_156080652"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Exploit Weakness",
+    "tradeStatId": "explicit.stat_50129423"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Hound's Mark",
+    "tradeStatId": "explicit.stat_555800967"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Lord of Drought",
+    "tradeStatId": "explicit.stat_2055715585"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Master of the Maelstrom",
+    "tradeStatId": "explicit.stat_185592058"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Misery Everlasting",
+    "tradeStatId": "explicit.stat_3832665876"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Tempt the Storm",
+    "tradeStatId": "explicit.stat_348883745"
+  },
+  {
+    "enchantmentTag": "affliction_curse_effect_small",
+    "notableName": "Victim Maker",
+    "tradeStatId": "explicit.stat_1936135020"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Battle-Hardened",
+    "tradeStatId": "explicit.stat_4188581520"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Natural Vigour",
+    "tradeStatId": "explicit.stat_510654792"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Prismatic Dance",
+    "tradeStatId": "explicit.stat_1149662934"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Readiness",
+    "tradeStatId": "explicit.stat_845306697"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Shifting Shadow",
+    "tradeStatId": "explicit.stat_1476913894"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Sublime Form",
+    "tradeStatId": "explicit.stat_2251304016"
+  },
+  {
+    "enchantmentTag": "affliction_evasion",
+    "notableName": "Untouchable",
+    "tradeStatId": "explicit.stat_2758966888"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Blacksmith",
+    "tradeStatId": "explicit.stat_1127706436"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Dragon Hunter",
+    "tradeStatId": "explicit.stat_1038955006"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Fire Attunement",
+    "tradeStatId": "explicit.stat_3188756614"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Flexible Sentry",
+    "tradeStatId": "explicit.stat_982290947"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Molten One's Mark",
+    "tradeStatId": "explicit.stat_3875792669"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Non-Flammable",
+    "tradeStatId": "explicit.stat_731840035"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Prismatic Carapace",
+    "tradeStatId": "explicit.stat_3492924480"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Prismatic Dance",
+    "tradeStatId": "explicit.stat_1149662934"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Prismatic Heart",
+    "tradeStatId": "explicit.stat_2342448236"
+  },
+  {
+    "enchantmentTag": "affliction_fire_resistance",
+    "notableName": "Pure Might",
+    "tradeStatId": "explicit.stat_2372915005"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Capacitor",
+    "tradeStatId": "explicit.stat_4025536654"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Flexible Sentry",
+    "tradeStatId": "explicit.stat_982290947"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Insulated",
+    "tradeStatId": "explicit.stat_212648555"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Prismatic Carapace",
+    "tradeStatId": "explicit.stat_3492924480"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Prismatic Dance",
+    "tradeStatId": "explicit.stat_1149662934"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Prismatic Heart",
+    "tradeStatId": "explicit.stat_2342448236"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Pure Aptitude",
+    "tradeStatId": "explicit.stat_3509724289"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Sage",
+    "tradeStatId": "explicit.stat_478147593"
+  },
+  {
+    "enchantmentTag": "affliction_lightning_resistance",
+    "notableName": "Wizardry",
+    "tradeStatId": "explicit.stat_3078065247"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Brush with Death",
+    "tradeStatId": "explicit.stat_2900833792"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Conservation of Energy",
+    "tradeStatId": "explicit.stat_2083777017"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Energy From Naught",
+    "tradeStatId": "explicit.stat_2195518432"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Mystical Ward",
+    "tradeStatId": "explicit.stat_2314111938"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Savour the Moment",
+    "tradeStatId": "explicit.stat_3539175001"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Self-Control",
+    "tradeStatId": "explicit.stat_3025453294"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Spring Back",
+    "tradeStatId": "explicit.stat_3603695769"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Sublime Sensation",
+    "tradeStatId": "explicit.stat_1364858171"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Vile Reinvigoration",
+    "tradeStatId": "explicit.stat_647201233"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_energy_shield",
+    "notableName": "Will Shaper",
+    "tradeStatId": "explicit.stat_1162352537"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Adrenaline",
+    "tradeStatId": "explicit.stat_4022743870"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Blessed",
+    "tradeStatId": "explicit.stat_775689239"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Brush with Death",
+    "tradeStatId": "explicit.stat_2900833792"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Careful Handling",
+    "tradeStatId": "explicit.stat_456502758"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Feast of Flesh",
+    "tradeStatId": "explicit.stat_2396755365"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Fettle",
+    "tradeStatId": "explicit.stat_1353571444"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Flow of Life",
+    "tradeStatId": "explicit.stat_2350430215"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Gladiator's Fortitude",
+    "tradeStatId": "explicit.stat_1591995797"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Heart of Iron",
+    "tradeStatId": "explicit.stat_1483358825"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Holistic Health",
+    "tradeStatId": "explicit.stat_3667965781"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Natural Vigour",
+    "tradeStatId": "explicit.stat_510654792"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Peace Amidst Chaos",
+    "tradeStatId": "explicit.stat_1734275536"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Peak Vigour",
+    "tradeStatId": "explicit.stat_1722821275"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Rote Reinforcement",
+    "tradeStatId": "explicit.stat_2478282326"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Sage",
+    "tradeStatId": "explicit.stat_478147593"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Sublime Sensation",
+    "tradeStatId": "explicit.stat_1364858171"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Surging Vitality",
+    "tradeStatId": "explicit.stat_2410501331"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Towering Threat",
+    "tradeStatId": "explicit.stat_3536778624"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Vicious Guard",
+    "tradeStatId": "explicit.stat_4054656914"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_life",
+    "notableName": "Wall of Muscle",
+    "tradeStatId": "explicit.stat_1363668533"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Blessed",
+    "tradeStatId": "explicit.stat_775689239"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Careful Handling",
+    "tradeStatId": "explicit.stat_456502758"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Clarity of Purpose",
+    "tradeStatId": "explicit.stat_684087686"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Daring Ideas",
+    "tradeStatId": "explicit.stat_2534405517"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Eldritch Inspiration",
+    "tradeStatId": "explicit.stat_3737604164"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Genius",
+    "tradeStatId": "explicit.stat_2763732093"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Holistic Health",
+    "tradeStatId": "explicit.stat_3667965781"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Improvisor",
+    "tradeStatId": "explicit.stat_810219447"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Liquid Inspiration",
+    "tradeStatId": "explicit.stat_1094635162"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Mindfulness",
+    "tradeStatId": "explicit.stat_2595115995"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Openness",
+    "tradeStatId": "explicit.stat_633943719"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Sage",
+    "tradeStatId": "explicit.stat_478147593"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Scintillating Idea",
+    "tradeStatId": "explicit.stat_2589589781"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Stubborn Student",
+    "tradeStatId": "explicit.stat_2383914651"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Will Shaper",
+    "tradeStatId": "explicit.stat_1162352537"
+  },
+  {
+    "enchantmentTag": "affliction_maximum_mana",
+    "notableName": "Wizardry",
+    "tradeStatId": "explicit.stat_3078065247"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Destructive Aspect",
+    "tradeStatId": "explicit.stat_3860179422"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Electric Presence",
+    "tradeStatId": "explicit.stat_3950683692"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Frantic Aspect",
+    "tradeStatId": "explicit.stat_792262925"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Introspection",
+    "tradeStatId": "explicit.stat_1309218394"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Master of Command",
+    "tradeStatId": "explicit.stat_3257074218"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Mortifying Aspect",
+    "tradeStatId": "explicit.stat_3881737087"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Pure Aptitude",
+    "tradeStatId": "explicit.stat_3509724289"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Pure Guile",
+    "tradeStatId": "explicit.stat_1621496909"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Pure Might",
+    "tradeStatId": "explicit.stat_2372915005"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Purposeful Harbinger",
+    "tradeStatId": "explicit.stat_507505131"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Replenishing Presence",
+    "tradeStatId": "explicit.stat_1496043857"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Righteous Path",
+    "tradeStatId": "explicit.stat_2620267328"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Self-Control",
+    "tradeStatId": "explicit.stat_3025453294"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Spiteful Presence",
+    "tradeStatId": "explicit.stat_1134501245"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Sublime Form",
+    "tradeStatId": "explicit.stat_2251304016"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Uncompromising",
+    "tradeStatId": "explicit.stat_382360671"
+  },
+  {
+    "enchantmentTag": "affliction_reservation_efficiency_small",
+    "notableName": "Volatile Presence",
+    "tradeStatId": "explicit.stat_2350668735"
+  }
+]

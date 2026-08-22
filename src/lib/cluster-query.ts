@@ -16,9 +16,10 @@
  * side has to be checked by hand.
  */
 
-export type JewelSize = "medium" | "large";
+export type JewelSize = "small" | "medium" | "large";
 
 const SIZE_TO_TYPE: Record<JewelSize, string> = {
+  small: "Small Cluster Jewel",
   medium: "Medium Cluster Jewel",
   large: "Large Cluster Jewel",
 };
@@ -27,10 +28,19 @@ const SIZE_TO_TYPE: Record<JewelSize, string> = {
  * "Adds # Passive Skills", the enchant every cluster jewel carries. The window
  * matches DESIRED_PASSIVE_COUNT in the app: a Medium is worth crafting at 4 or
  * 5, a Large only at 8.
+ *
+ * Small is the exception, because nothing crafts one. Its rows exist so PoB
+ * Trader can price the small cluster already sitting in a pasted build
+ * (poestash#379), and that jewel is whatever the player has — so the window is
+ * the size's whole legal range (RePoE min_skills 2, max_skills 3) and every
+ * small matches it. Stated rather than skipped: an absent entry throws below,
+ * and a size that opts out of the filter is the understatement bug this module
+ * exists to prevent.
  */
 const PASSIVE_COUNT_STAT = "enchant.stat_3086156145";
 
 const DESIRED_PASSIVE_COUNT: Record<JewelSize, { min: number; max: number }> = {
+  small: { min: 2, max: 3 },
   medium: { min: 4, max: 5 },
   large: { min: 8, max: 8 },
 };

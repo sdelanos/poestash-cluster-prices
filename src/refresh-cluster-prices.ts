@@ -8,7 +8,8 @@
  *   league    League name. With no argument the worker resolves the current
  *             challenge league at run time (see lib/trade-league.ts), so it
  *             follows league rollovers with no workflow edit. A league with no
- *             combo rows yet is seeded from the existing catalog.
+ *             combo rows yet is seeded from the existing catalog; the small
+ *             clusters are seeded from data/small-cluster-combos.json.
  *
  * Designed to be run multiple times per day via cron. Each run processes
  * combos oldest-first and stops when all are within the 24h staleness window.
@@ -18,6 +19,7 @@
 
 import "dotenv/config";
 import postgres from "postgres";
+import { SMALL_COMBOS, smallComboRows } from "./lib/small-cluster-combos";
 import { resolveTradeLeague } from "./lib/trade-league";
 import { buildComboSearchQuery, type JewelSize } from "./lib/cluster-query";
 import { sustainableIntervalMs, describeLimits } from "./lib/rate-limit";
@@ -205,6 +207,29 @@ async function seedLeagueCombos(
   );
 }
 
+/**
+ * Add the small-cluster rows to a league's catalog, from the committed
+ * catalogue in lib/small-cluster-combos.ts (which is where the size's combo
+ * space is explained).
+ *
+ * Runs on every invocation, not just for an unseeded league: the leagues that
+ * already hold a medium/large catalog would otherwise never gain the size.
+ * Idempotent — a conflict is a row that already exists.
+ */
+async function seedSmallCombos(
+  sql: postgres.Sql,
+  league: string,
+): Promise<void> {
+  const rows = smallComboRows(league, SMALL_COMBOS);
+  const seeded = await sql`
+    INSERT INTO cluster_jewel_prices ${sql(rows)}
+    ON CONFLICT (league, enchantment_tag, combo_key) DO NOTHING
+  `;
+  if (seeded.count > 0) {
+    console.log(`Seeded ${seeded.count} small combos for ${league}`);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -241,6 +266,7 @@ async function main() {
   }
 
   await seedLeagueCombos(sql, league);
+  await seedSmallCombos(sql, league);
 
   // Build currency conversion map
   const currencyRows = await sql`
