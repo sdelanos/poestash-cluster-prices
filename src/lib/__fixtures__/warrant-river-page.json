@@ -1,0 +1,718 @@
+{
+ "captured": "2026-08-30, Allflame, api.pathofexile.com/public-stash-tabs",
+ "stashes": [
+  {
+   "league": "Allflame",
+   "stash": "3",
+   "items": [
+    {
+     "verified": false,
+     "w": 1,
+     "h": 1,
+     "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvTWVyY2VuYXJ5V2FycmFudCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/5cf435d2d3/MercenaryWarrant.png",
+     "iconStackLevel": "L:82",
+     "league": "Allflame",
+     "id": "cc69e7c6305a7769294487aa5db045789e4cea1bbdcd76e2c0699c0006a09e8c",
+     "name": "",
+     "typeLine": "Mercenary Warrant",
+     "baseType": "Mercenary Warrant",
+     "ilvl": 0,
+     "identified": true,
+     "note": "~b/o 100 chaos",
+     "properties": [
+      {
+       "name": "",
+       "values": [
+        [
+         "Zari, the Wounding",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "",
+       "values": [],
+       "displayMode": 4
+      },
+      {
+       "name": "Build",
+       "values": [
+        [
+         "Flamequiver",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "Mercenary Level",
+       "values": [
+        [
+         "82",
+         0
+        ]
+       ],
+       "displayMode": 0,
+       "type": 78
+      }
+     ],
+     "mercenarySkills": [
+      {
+       "hash": 34665,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvZmlyZWFycm93In1d/03cf3eeb88/firearrow.png",
+       "name": "Burning Arrow",
+       "supports": [
+        {
+         "hash": 65240,
+         "name": "Greater Swift Affliction",
+         "tier": 3
+        },
+        {
+         "hash": 50485,
+         "name": "Greater Faster Attacks",
+         "tier": 3
+        },
+        {
+         "hash": 50303,
+         "name": "Ignite Chance",
+         "tier": 2
+        },
+        {
+         "hash": 62885,
+         "name": "Fire Penetration",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 24179,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvQWxjaGVtaXN0c01hcmsifV0/8995d7db82/AlchemistsMark.png",
+       "name": "Alchemist's Mark"
+      },
+      {
+       "hash": 36298,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvZnVzZWFycm93In1d/bcd44127a9/fusearrow.png",
+       "name": "Explosive Arrow",
+       "supports": [
+        {
+         "hash": 50485,
+         "name": "Greater Faster Attacks",
+         "tier": 3
+        },
+        {
+         "hash": 21489,
+         "name": "Concentrated Effect",
+         "tier": 2
+        },
+        {
+         "hash": 42966,
+         "name": "Gilded Maximum Explosions",
+         "tier": 3
+        }
+       ]
+      },
+      {
+       "hash": 18004,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvQmxhc3RSYWluIn1d/ad691fc824/BlastRain.png",
+       "name": "Blast Rain of Trarthus",
+       "supports": [
+        {
+         "hash": 44886,
+         "name": "Elemental Damage with Attacks",
+         "tier": 2
+        },
+        {
+         "hash": 26568,
+         "name": "Greater More Duration",
+         "tier": 3
+        },
+        {
+         "hash": 53342,
+         "name": "Increased Area of Effect",
+         "tier": 2
+        },
+        {
+         "hash": 37460,
+         "name": "Greater DoT Multiplier",
+         "tier": 3
+        }
+       ]
+      },
+      {
+       "hash": 39298,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvRmxhbW1hYmlsaXR5In1d/14f32faac3/Flammability.png",
+       "name": "Blasphemy Flammability"
+      },
+      {
+       "hash": 60723,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvUXVpY2tEYXNoIn1d/de84e07ed7/QuickDash.png",
+       "name": "Dash"
+      }
+     ],
+     "descrText": "Right click this item to view Mercenary details.\r\nCan be used in a personal Map Device alongside a Map to have this previously fought Mercenary reappear in the area for a rematch.",
+     "frameType": 0,
+     "frameTypeId": "Normal",
+     "x": 7,
+     "y": 6,
+     "inventoryId": "Stash1"
+    }
+   ]
+  },
+  {
+   "league": "Allflame",
+   "stash": "~price 20 divine",
+   "items": [
+    {
+     "verified": false,
+     "w": 1,
+     "h": 1,
+     "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvTWVyY2VuYXJ5V2FycmFudCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/5cf435d2d3/MercenaryWarrant.png",
+     "iconStackLevel": "L:83",
+     "league": "Allflame",
+     "id": "f62a4a688c6826b5e92976246d4f27279866855c3490b0f0a993b89ae6d820f2",
+     "name": "",
+     "typeLine": "Mercenary Warrant",
+     "baseType": "Mercenary Warrant",
+     "ilvl": 0,
+     "identified": true,
+     "properties": [
+      {
+       "name": "",
+       "values": [
+        [
+         "Lona, the Hateful",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "",
+       "values": [],
+       "displayMode": 4
+      },
+      {
+       "name": "Build",
+       "values": [
+        [
+         "Frosthand",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "Mercenary Level",
+       "values": [
+        [
+         "83",
+         0
+        ]
+       ],
+       "displayMode": 0,
+       "type": 78
+      }
+     ],
+     "mercenarySkills": [
+      {
+       "hash": 10557,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvRnJvc3RCb21iIn1d/6ebc8a919d/FrostBomb.png",
+       "name": "Frost Bomb",
+       "supports": [
+        {
+         "hash": 65114,
+         "name": "Less Duration",
+         "tier": 2
+        },
+        {
+         "hash": 53342,
+         "name": "Increased Area of Effect",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 6479,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvRnJvc3RiaXRlIn1d/31c34afce7/Frostbite.png",
+       "name": "Frostbite",
+       "supports": [
+        {
+         "hash": 65120,
+         "name": "Lesser Spell Cascade",
+         "tier": 1
+        },
+        {
+         "hash": 53342,
+         "name": "Increased Area of Effect",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 31928,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvRnJvc3RWb3J0ZXgifV0/841930c5bd/FrostVortex.png",
+       "name": "Vortex",
+       "supports": [
+        {
+         "hash": 61972,
+         "name": "Ailment Effect",
+         "tier": 2
+        },
+        {
+         "hash": 53342,
+         "name": "Increased Area of Effect",
+         "tier": 2
+        },
+        {
+         "hash": 64281,
+         "name": "Swift Affliction",
+         "tier": 2
+        },
+        {
+         "hash": 38851,
+         "name": "Faster Casting",
+         "tier": 2
+        },
+        {
+         "hash": 38571,
+         "name": "Hypothermia",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 57063,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvRnJvemVuU3BoZXJlIn1d/b8f11c0305/FrozenSphere.png",
+       "name": "Eye of Winter",
+       "supports": [
+        {
+         "hash": 61471,
+         "name": "Critical Chance",
+         "tier": 2
+        },
+        {
+         "hash": 8607,
+         "name": "Greater Faster Casting",
+         "tier": 3
+        },
+        {
+         "hash": 57644,
+         "name": "Faster Projectiles",
+         "tier": 2
+        },
+        {
+         "hash": 60094,
+         "name": "Greater Added Cold",
+         "tier": 3
+        }
+       ]
+      },
+      {
+       "hash": 28757,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvdGVsZXBvcnRiYWxsIn1d/dc0ce3b2a2/teleportball.png",
+       "name": "Lightning Warp",
+       "supports": [
+        {
+         "hash": 8607,
+         "name": "Greater Faster Casting",
+         "tier": 3
+        },
+        {
+         "hash": 19113,
+         "name": "Greater Area of Effect",
+         "tier": 3
+        }
+       ]
+      },
+      {
+       "hash": 21708,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvYXVyYWVuZXJneSJ9XQ/34ff3a4c3a/auraenergy.png",
+       "name": "Discipline"
+      }
+     ],
+     "descrText": "Right click this item to view Mercenary details.\r\nCan be used in a personal Map Device alongside a Map to have this previously fought Mercenary reappear in the area for a rematch.",
+     "frameType": 0,
+     "frameTypeId": "Normal",
+     "x": 11,
+     "y": 6,
+     "inventoryId": "Stash19"
+    }
+   ]
+  },
+  {
+   "league": "Allflame",
+   "stash": "$",
+   "items": [
+    {
+     "verified": false,
+     "w": 1,
+     "h": 1,
+     "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvTWVyY2VuYXJ5V2FycmFudCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/5cf435d2d3/MercenaryWarrant.png",
+     "iconStackLevel": "L:83",
+     "league": "Allflame",
+     "id": "32842e64383804fd586cfd13a3e5f5514aa9ccee19d4b6b06e13f8ddf1790b68",
+     "name": "",
+     "typeLine": "Mercenary Warrant",
+     "baseType": "Mercenary Warrant",
+     "ilvl": 0,
+     "identified": true,
+     "properties": [
+      {
+       "name": "",
+       "values": [
+        [
+         "Karielle, the Bardiyan-Born",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "",
+       "values": [],
+       "displayMode": 4
+      },
+      {
+       "name": "Build",
+       "values": [
+        [
+         "Infamous Kineticist",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "Mercenary Level",
+       "values": [
+        [
+         "83",
+         0
+        ]
+       ],
+       "displayMode": 0,
+       "type": 78
+      }
+     ],
+     "mercenarySkills": [
+      {
+       "hash": 5689,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvZWxlbWVudGFsd2Vha25lc3MifV0/7d769ba813/elementalweakness.png",
+       "name": "Elemental Weakness",
+       "supports": [
+        {
+         "hash": 53342,
+         "name": "Increased Area of Effect",
+         "tier": 2
+        },
+        {
+         "hash": 38851,
+         "name": "Faster Casting",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 57450,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvRmlyZXdhbGwifV0/2c60a66cb6/Firewall.png",
+       "name": "Flame Wall",
+       "supports": [
+        {
+         "hash": 37388,
+         "name": "Elemental Focus",
+         "tier": 2
+        },
+        {
+         "hash": 26568,
+         "name": "Greater More Duration",
+         "tier": 3
+        },
+        {
+         "hash": 38851,
+         "name": "Faster Casting",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 32089,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvS2luZXRpY1JhaW4ifV0/d44538c8cd/KineticRain.png",
+       "name": "Kinetic Rain of Impact",
+       "supports": [
+        {
+         "hash": 987,
+         "name": "Faster Attacks",
+         "tier": 2
+        },
+        {
+         "hash": 40533,
+         "name": "Greater Added Lightning",
+         "tier": 3
+        },
+        {
+         "hash": 52758,
+         "name": "Added Cold",
+         "tier": 2
+        },
+        {
+         "hash": 49419,
+         "name": "Greater Multiple Projectiles",
+         "tier": 3
+        },
+        {
+         "hash": 53342,
+         "name": "Increased Area of Effect",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 1356,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvYmFycmFnZSJ9XQ/64580ed8c5/barrage.png",
+       "name": "Barrage",
+       "supports": [
+        {
+         "hash": 61471,
+         "name": "Critical Chance",
+         "tier": 2
+        },
+        {
+         "hash": 44886,
+         "name": "Elemental Damage with Attacks",
+         "tier": 2
+        },
+        {
+         "hash": 32189,
+         "name": "Critical Damage",
+         "tier": 2
+        },
+        {
+         "hash": 57644,
+         "name": "Faster Projectiles",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 65473,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvSW5zcGlyaW5nQ3J5In1d/d18a2118fd/InspiringCry.png",
+       "name": "Inspiring Cry",
+       "supports": [
+        {
+         "hash": 26568,
+         "name": "Greater More Duration",
+         "tier": 3
+        },
+        {
+         "hash": 47477,
+         "name": "Warcry Speed",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 52155,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvYXVyYXNwZWVkIn1d/4376406372/auraspeed.png",
+       "name": "Haste"
+      }
+     ],
+     "descrText": "Right click this item to view Mercenary details.\r\nCan be used in a personal Map Device alongside a Map to have this previously fought Mercenary reappear in the area for a rematch.",
+     "frameType": 0,
+     "frameTypeId": "Normal",
+     "x": 0,
+     "y": 7,
+     "inventoryId": "Stash22"
+    }
+   ]
+  },
+  {
+   "league": "Allflame",
+   "stash": "3",
+   "items": [
+    {
+     "verified": false,
+     "w": 1,
+     "h": 1,
+     "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvTWVyY2VuYXJ5V2FycmFudCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/5cf435d2d3/MercenaryWarrant.png",
+     "iconStackLevel": "L:83",
+     "league": "Allflame",
+     "id": "f39105ce5cab8fb7fcc991aff76268f8c522e956e2067b40c16b83431c67121f",
+     "name": "",
+     "typeLine": "Mercenary Warrant",
+     "baseType": "Mercenary Warrant",
+     "ilvl": 0,
+     "identified": true,
+     "note": "~b/o 100 chaos",
+     "properties": [
+      {
+       "name": "",
+       "values": [
+        [
+         "Zob, the Azadin Gibberer",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "",
+       "values": [],
+       "displayMode": 4
+      },
+      {
+       "name": "Build",
+       "values": [
+        [
+         "Infamous Shock Ambusher",
+         0
+        ]
+       ],
+       "displayMode": 0
+      },
+      {
+       "name": "Mercenary Level",
+       "values": [
+        [
+         "83",
+         0
+        ]
+       ],
+       "displayMode": 0,
+       "type": 78
+      }
+     ],
+     "mercenarySkills": [
+      {
+       "hash": 41484,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvQ29uZHVjdGl2aXR5In1d/98031379d0/Conductivity.png",
+       "name": "Conductivity",
+       "supports": [
+        {
+         "hash": 19113,
+         "name": "Greater Area of Effect",
+         "tier": 3
+        },
+        {
+         "hash": 50222,
+         "name": "More Duration",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 25149,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvTGlnaHRuaW5nUHJvamVjdGlsZVRyYXAifV0/898659f3a6/LightningProjectileTrap.png",
+       "name": "Vaal Lightning Trap",
+       "supports": [
+        {
+         "hash": 50222,
+         "name": "More Duration",
+         "tier": 2
+        },
+        {
+         "hash": 48875,
+         "name": "Cooldown Recovery",
+         "tier": 2
+        }
+       ]
+      },
+      {
+       "hash": 37561,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvYmFsbGxpZ2h0bmluZyJ9XQ/486c1d5170/balllightning.png",
+       "name": "Ball Lightning of Orbiting Trap",
+       "supports": [
+        {
+         "hash": 14557,
+         "name": "Arcane Traps",
+         "tier": 3
+        },
+        {
+         "hash": 41256,
+         "name": "Lightning Penetration",
+         "tier": 2
+        },
+        {
+         "hash": 3465,
+         "name": "Throwing Speed",
+         "tier": 2
+        },
+        {
+         "hash": 59079,
+         "name": "Greater Trap and Mine Damage",
+         "tier": 3
+        },
+        {
+         "hash": 24343,
+         "name": "Greater Lucky Lightning Damage",
+         "tier": 3
+        }
+       ]
+      },
+      {
+       "hash": 5247,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvdGVsZXBvcnRiYWxsIn1d/dc0ce3b2a2/teleportball.png",
+       "name": "Lightning Warp Trap",
+       "supports": [
+        {
+         "hash": 819,
+         "name": "Trigger Radius",
+         "tier": 2
+        },
+        {
+         "hash": 59079,
+         "name": "Greater Trap and Mine Damage",
+         "tier": 3
+        },
+        {
+         "hash": 58938,
+         "name": "Greater Throwing Speed",
+         "tier": 3
+        },
+        {
+         "hash": 19113,
+         "name": "Greater Area of Effect",
+         "tier": 3
+        }
+       ]
+      },
+      {
+       "hash": 14498,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvU3BlbGxEYW1hZ2VBdXJhIn1d/04d99e7d46/SpellDamageAura.png",
+       "name": "Zealotry"
+      },
+      {
+       "hash": 64528,
+       "icon": "https://web.poecdn.com/gen/image/WzIxLDE0LHsiayI6IjJEQXJ0L1NraWxsSWNvbnMvU21va2VCb21iIn1d/d6c8621407/SmokeBomb.png",
+       "name": "Smoke Mine",
+       "supports": [
+        {
+         "hash": 10608,
+         "name": "Greater Cooldown Recovery",
+         "tier": 3
+        },
+        {
+         "hash": 50475,
+         "name": "Second Wind",
+         "tier": 3
+        }
+       ]
+      }
+     ],
+     "descrText": "Right click this item to view Mercenary details.\r\nCan be used in a personal Map Device alongside a Map to have this previously fought Mercenary reappear in the area for a rematch.",
+     "frameType": 0,
+     "frameTypeId": "Normal",
+     "x": 0,
+     "y": 5,
+     "inventoryId": "Stash12"
+    }
+   ]
+  }
+ ],
+ "labels": [
+  "byNote",
+  "byTab",
+  "unpriced",
+  "infamous"
+ ]
+}

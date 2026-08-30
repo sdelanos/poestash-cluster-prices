@@ -1,0 +1,49 @@
+name: Refresh Warrant Corpus
+on:
+  schedule:
+    # Every 6h at :20. Each run seeks to the live river tail and drains a
+    # bounded sample, so a skipped or late run just samples a later slice —
+    # there is no backlog to catch up and nothing goes stale. See ADR 0003.
+    - cron: '20 */6 * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: warrant-corpus
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    # The worker caps itself at 12 minutes of draining; this is the outer bound.
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      POE_CLIENT_ID: ${{ secrets.POE_CLIENT_ID }}
+      POE_CLIENT_SECRET: ${{ secrets.POE_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Reads the public stash river under its own rate-limit policy (2 req/s
+      # per IP), which costs none of the trade budget the other workers share.
+      - name: Build the Warrant corpus
+        run: npm run refresh:warrant-corpus -- --raw-out raw/warrant-observations.ndjson
+
+      # The raw sample is deliberately NOT in Postgres: at ~866 listed Warrants
+      # a minute it would be ~500MB/day. It lives here instead, free, so the
+      # corpus can be re-analysed and the finding re-checked. `if: always()` so
+      # an interrupted drain still keeps the slice it managed to sample.
+      - name: Keep the raw sample
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: warrant-observations-${{ github.run_id }}
+          path: raw/warrant-observations.ndjson
+          retention-days: 30
+          if-no-files-found: warn
