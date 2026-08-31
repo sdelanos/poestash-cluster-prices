@@ -3,7 +3,21 @@ on:
   schedule:
     # Every 20 minutes — each run fetches all poe.ninja categories and
     # batch-upserts ~40k rows. Completes in ~15 seconds.
+    #
+    # Kept as a fallback, not as the primary trigger: GitHub delivers a
+    # fraction of these under global load, and every run it does start
+    # succeeds — the trigger simply never arrives. The `repository_dispatch`
+    # below is what a Vercel cron in sdelanos/poestash fires on the real
+    # cadence; sdelanos/poestash#513 and its ADR 0063 hold the measurement
+    # and the ruling. If that cron ever stops, this line means delivery
+    # falls back to the old rate rather than to zero.
     - cron: '*/20 * * * *'
+  # Fired by /api/cron/dispatch-ninja-prices in sdelanos/poestash. The
+  # `types` value is the contract: that route sends this exact event_type,
+  # and GitHub answers 204 for an event type nothing listens for, so
+  # renaming one side silently stops the runs.
+  repository_dispatch:
+    types: [refresh-ninja-prices]
   workflow_dispatch: {}
 
 concurrency:
