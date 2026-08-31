@@ -10,3 +10,4 @@ Background workers for [PoeStash](https://www.poestash.com). Runs via GitHub Act
 - **Temple prices** (`refresh-temple-prices.yml`): refreshes Temple of Atzoatl room prices hourly.
 - **Roast rare prices** (`refresh-roast-rare-prices.yml`): prices the rare slots of build guides players pasted into a Roast, every 3 hours.
 - **Scrying Orb prices** (`refresh-scrying-orb-prices.yml`): refreshes per-map Scrying Orb prices from poe.watch daily.
+- **Warrant corpus** (`refresh-warrant-corpus.yml`): samples the public stash river every 6 hours for listed Mercenary Warrants, and writes per-(support, tier) price contrasts. Costs no trade budget; keeps the raw sample as an Actions artifact, not in Postgres. `npm run analyse:warrant-corpus -- <ndjson>` re-runs the finding against a kept sample. See ADR 0003.
