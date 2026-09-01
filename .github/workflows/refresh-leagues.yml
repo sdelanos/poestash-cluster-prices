@@ -1,10 +1,11 @@
 name: Refresh PoE Leagues
 on:
-  schedule:
-    # Hourly at :15. One OAuth + four /league calls per run. The PoE
-    # leagues list only changes ~4 times per year, but the app reads
-    # from this cache on every render so we want a fresh copy waiting.
-    - cron: '15 * * * *'
+  # Hourly at :15. One OAuth + four /league calls per run. The PoE
+  # leagues list only changes ~4 times per year, but the app reads
+  # from this cache on every render so we want a fresh copy waiting.
+  # The cadence lives in the `vercel.json` cron that fires this event;
+  # no `schedule:` fallback (ADR 0063).
+  #
   # Fired by /api/cron/dispatch-worker in sdelanos/poestash. The `types`
   # value is the contract: that route sends this exact event_type, and GitHub
   # answers 204 for an event type nothing listens for, so renaming one side
