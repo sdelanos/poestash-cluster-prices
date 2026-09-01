@@ -35,6 +35,16 @@ const SAMPLE_SIZE = 10;
 /** Pause between rooms (only relevant if more rooms get added later). */
 const PAUSE_MS = 10_000;
 
+/**
+ * "Open Room" option id on the `pseudo.pseudo_temple_gem_room_*` stats
+ * (2 is "Closed Room"). Required: a temple can *have* Doryani's Institute
+ * while the room sits obstructed, in which case the double corrupt can never
+ * be run and the listing is worthless. Obstructed temples list cheap, so
+ * under a price-ascending sort they land squarely inside the SAMPLE_SIZE
+ * window and drag the median below what a usable temple actually costs.
+ */
+const OPEN_ROOM_OPTION = "1";
+
 const userAgent = `OAuth ${process.env.POE_CLIENT_ID ?? "poestashapp"}/1.0.0 (contact: contact@poestash.com)`;
 
 interface TempleRoom {
@@ -108,7 +118,12 @@ async function searchRoom(league: string, room: TempleRoom): Promise<FetchResult
     query: {
       status: { option: "online" },
       stats: [
-        { type: "and", filters: [{ id: room.tradeStatId }] },
+        {
+          type: "and",
+          filters: [
+            { id: room.tradeStatId, value: { option: OPEN_ROOM_OPTION } },
+          ],
+        },
       ],
     },
     sort: { price: "asc" },
