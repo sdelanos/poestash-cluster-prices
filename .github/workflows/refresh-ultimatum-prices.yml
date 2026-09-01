@@ -1,9 +1,9 @@
 name: Refresh Ultimatum Prices
 on:
   schedule:
-    # Hourly at :45 — each run fetches Inscribed Ultimatum prices from poe.watch
+    # Every 6h at :45 — each run fetches Inscribed Ultimatum prices from poe.watch
     # and batch-upserts ~4k rows per league.
-    - cron: '45 * * * *'
+    - cron: '45 */6 * * *'
   workflow_dispatch: {}
 
 concurrency:

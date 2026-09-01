@@ -1,10 +1,10 @@
 name: Refresh Temple Prices
 on:
   schedule:
-    # Hourly at :30 — each run hits the PoE trade API twice per league
-    # (1 search + 1 fetch) for the gem-room t3 pseudo stat. ~8 calls/hour
-    # total across the 4 leagues, well under the 30/300s ceiling.
-    - cron: '30 * * * *'
+    # Every 6h at :30 — each run hits the PoE trade API twice per league
+    # (1 search + 1 fetch) for the gem-room t3 pseudo stat. ~8 calls per run
+    # across the 4 leagues, well under the 30/300s ceiling.
+    - cron: '30 */6 * * *'
   workflow_dispatch: {}
 
 concurrency:
