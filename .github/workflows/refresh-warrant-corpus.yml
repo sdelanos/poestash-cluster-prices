@@ -1,10 +1,17 @@
 name: Refresh Warrant Corpus
 on:
-  schedule:
-    # Every 6h at :20. Each run seeks to the live river tail and drains a
-    # bounded sample, so a skipped or late run just samples a later slice —
-    # there is no backlog to catch up and nothing goes stale. See ADR 0003.
-    - cron: '20 */6 * * *'
+  # Every 6h at :20. Each run seeks to the live river tail and drains a
+  # bounded sample, so a skipped or late run just samples a later slice —
+  # there is no backlog to catch up and nothing goes stale. See ADR 0003.
+  # The cadence lives in the `vercel.json` cron that fires this event;
+  # no `schedule:` fallback (ADR 0063).
+  #
+  # Fired by /api/cron/dispatch-worker in sdelanos/poestash. The `types`
+  # value is the contract: that route sends this exact event_type, and GitHub
+  # answers 204 for an event type nothing listens for, so renaming one side
+  # silently stops the runs (ADR 0063).
+  repository_dispatch:
+    types: [refresh-warrant-corpus]
   workflow_dispatch: {}
 
 concurrency:

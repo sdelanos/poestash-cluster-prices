@@ -1,15 +1,22 @@
 name: Refresh Roast Rare Prices
 on:
-  schedule:
-    # Every 3h, offset off the hour so it does not *start* alongside the cluster
-    # (:00) or split (:23) runs. It will still overlap them: both are 6-hourly
-    # with a 330-minute timeout, so between them they occupy most of every
-    # window. Overlap is expected, and what keeps this worker honest inside it is
-    # the worker itself — 15s pacing instead of 10s, at most 30 markets a run
-    # (~15 minutes of calls), and abandoning the run after five 429s rather than
-    # fighting for the window. Guides are seeded by players pasting them, so the
-    # queue is usually short and often empty.
-    - cron: '41 */3 * * *'
+  # Every 6h, offset off the hour so it does not *start* alongside the cluster
+  # (:00) run. Split (:23) is disabled — 3.29 removed splitting — so cluster is
+  # the only neighbour left, and with a 330-minute timeout on a 6-hourly cadence
+  # it occupies most of every window. Overlap is expected, and what keeps this
+  # worker honest inside it is the worker itself — 15s pacing instead of 10s, at most 30 markets a run
+  # (~15 minutes of calls), and abandoning the run after five 429s rather than
+  # fighting for the window. Guides are seeded by players pasting them, so the
+  # queue is usually short and often empty. The cadence lives in the
+  # `vercel.json` cron that fires this event; no `schedule:` fallback
+  # (ADR 0063).
+  #
+  # Fired by /api/cron/dispatch-worker in sdelanos/poestash. The `types`
+  # value is the contract: that route sends this exact event_type, and GitHub
+  # answers 204 for an event type nothing listens for, so renaming one side
+  # silently stops the runs (ADR 0063).
+  repository_dispatch:
+    types: [refresh-roast-rare-prices]
   workflow_dispatch: {}
 
 concurrency:

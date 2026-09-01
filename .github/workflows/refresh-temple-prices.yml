@@ -1,10 +1,17 @@
 name: Refresh Temple Prices
 on:
-  schedule:
-    # Hourly at :30 — each run hits the PoE trade API twice per league
-    # (1 search + 1 fetch) for the gem-room t3 pseudo stat. ~8 calls/hour
-    # total across the 4 leagues, well under the 30/300s ceiling.
-    - cron: '30 * * * *'
+  # Every 6h at :30 — each run hits the PoE trade API twice per league
+  # (1 search + 1 fetch) for the gem-room t3 pseudo stat. ~8 calls per run
+  # across the 4 leagues, well under the 30/300s ceiling. The cadence lives
+  # in the `vercel.json` cron that fires this event; no `schedule:` fallback
+  # (ADR 0063).
+  #
+  # Fired by /api/cron/dispatch-worker in sdelanos/poestash. The `types`
+  # value is the contract: that route sends this exact event_type, and GitHub
+  # answers 204 for an event type nothing listens for, so renaming one side
+  # silently stops the runs (ADR 0063).
+  repository_dispatch:
+    types: [refresh-temple-prices]
   workflow_dispatch: {}
 
 concurrency:
